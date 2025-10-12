@@ -204,6 +204,33 @@ jobs:
           exit 1
         fi
         
+    - name: Save metrics snapshot
+      run: |
+        # Save metrics to file with timestamp
+        TIMESTAMP=$(date -u +%Y%m%d_%H%M%S)
+        curl -s http://localhost:9091/metrics > metrics_${TIMESTAMP}.txt
+        curl -s http://localhost:9091/health > health_${TIMESTAMP}.json
+        
+        # Create summary file
+        echo "# Metrics Snapshot - $(date -u)" > metrics_summary.md
+        echo "" >> metrics_summary.md
+        echo "## 📊 System Health" >> metrics_summary.md
+        cat health_${TIMESTAMP}.json >> metrics_summary.md
+        echo "" >> metrics_summary.md
+        echo "" >> metrics_summary.md
+        echo "## 📈 Full Metrics" >> metrics_summary.md
+        echo "See metrics_${TIMESTAMP}.txt for complete Prometheus metrics" >> metrics_summary.md
+        
+    - name: Upload metrics artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: metrics-snapshot-${{ github.run_id }}
+        path: |
+          metrics_*.txt
+          health_*.json
+          metrics_summary.md
+        retention-days: 30
+        
     - name: Generate comprehensive health report
       run: |
         echo "## 📊 System Health & Metrics Report" >> $GITHUB_STEP_SUMMARY
@@ -220,6 +247,9 @@ jobs:
         echo "- Event loop lag" >> $GITHUB_STEP_SUMMARY
         echo "- Node.js process metrics" >> $GITHUB_STEP_SUMMARY
         echo "- HTTP request metrics" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 💾 Metrics Snapshot" >> $GITHUB_STEP_SUMMARY
+        echo "Metrics saved as artifact: **metrics-snapshot-${{ github.run_id }}**" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🔗 Access Dashboard" >> $GITHUB_STEP_SUMMARY
         echo "To view the dashboard locally:" >> $GITHUB_STEP_SUMMARY

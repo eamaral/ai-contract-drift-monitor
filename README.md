@@ -209,6 +209,8 @@ npm run drift
 
 **Purpose:** Monitor the monitoring system itself - ensure your drift detection is always running.
 
+### Local Monitoring (Visual Dashboard)
+
 - **Prometheus** (http://localhost:9090) - Collects metrics from the monitoring infrastructure
 - **Grafana** (http://localhost:3001) - Visual dashboard showing system health
 - **Node Exporter** (http://localhost:9100) - System metrics (CPU, Memory, Disk, Network)
@@ -217,6 +219,23 @@ npm run drift
 - ✅ Is the drift check service running?
 - ✅ Is the system healthy? (CPU, RAM, Disk)
 - ✅ Are there any performance issues?
+
+**To use:** Run `npm run start` locally and access http://localhost:3001
+
+### CI/CD Monitoring (Metrics Snapshots)
+
+**In GitHub Actions**, metrics are saved as downloadable artifacts:
+
+- **metrics_TIMESTAMP.txt** - Complete Prometheus metrics
+- **health_TIMESTAMP.json** - Health check status
+- **metrics_summary.md** - Summary report
+
+**To access:**
+1. Go to Actions tab
+2. Select a workflow run
+3. Download **metrics-snapshot-{run_id}** artifact
+
+**Retention:** 30 days
 
 **Think of it as:** A redundancy layer - if your monitoring system goes down, you'll know immediately from the dashboard. It's "monitoring the monitor" to ensure reliability.
 

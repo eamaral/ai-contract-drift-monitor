@@ -31,8 +31,8 @@ export async function sendEmailMessage(
       ${factsHtml}
       <hr style="margin: 20px 0;">
       <p style="color: #666; font-size: 12px;">
-        Enviado em: ${new Date().toLocaleString('pt-BR')}<br>
-        Sistema: AI Contract Drift Monitor
+        Sent at: ${new Date().toLocaleString('en-US')}<br>
+        System: AI Contract Drift Monitor
       </p>
     </div>
   `;

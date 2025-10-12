@@ -121,11 +121,11 @@ async function main(): Promise<void> {
   if (changedTargets.length === 0) {
     // No changes detected - send success notification
     title = '✅ API Contracts Status - All Good';
-    text = `Todos os ${totalTargets} endpoints estão estáveis. Nenhuma mudança detectada nos schemas das APIs monitoradas.`;
+    text = `All ${totalTargets} endpoints are stable. No changes detected in monitored API schemas.`;
     facts = [
-      { name: 'APIs Monitoradas', value: String(totalTargets) },
-      { name: 'APIs com Mudanças', value: '0' },
-      { name: 'Status', value: '✅ Estável' }
+      { name: 'APIs Monitored', value: String(totalTargets) },
+      { name: 'APIs with Changes', value: '0' },
+      { name: 'Status', value: '✅ Stable' }
     ];
   } else {
     // Changes detected - send alert notification
@@ -137,16 +137,16 @@ async function main(): Promise<void> {
       summary = await summarizeDiff(aiUrl, aiKey, perTargetDiff);
     } catch (e) {
       console.warn('[drift] summarize failed, falling back to plain text');
-      summary = `Mudanças detectadas em ${changedTargets.length} endpoints. Diff:\n` + diffSummaryPlain;
+      summary = `Changes detected in ${changedTargets.length} endpoints. Diff:\n` + diffSummaryPlain;
     }
 
     title = '🚨 API Drift Detected';
     text = summary;
     facts = [
-      { name: 'APIs Monitoradas', value: String(totalTargets) },
-      { name: 'APIs com Mudanças', value: String(changedTargets.length) },
-      { name: 'APIs Afetadas', value: changedTargets.join(', ') },
-      { name: 'Status', value: '⚠️ Mudanças Detectadas' }
+      { name: 'APIs Monitored', value: String(totalTargets) },
+      { name: 'APIs with Changes', value: String(changedTargets.length) },
+      { name: 'Affected APIs', value: changedTargets.join(', ') },
+      { name: 'Status', value: '⚠️ Changes Detected' }
     ];
   }
 

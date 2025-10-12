@@ -11,10 +11,10 @@ export async function sendConsoleMessage(
   console.log(`📝 ${text}`);
   
   if (facts && facts.length > 0) {
-    console.log('\n📊 Detalhes:');
-    facts.forEach(fact => {
-      console.log(`   • ${fact.name}: ${fact.value}`);
-    });
+  console.log('\n📊 Details:');
+  facts.forEach(fact => {
+    console.log(`   • ${fact.name}: ${fact.value}`);
+  });
   }
   
   console.log('\n⏰ Timestamp:', new Date().toISOString());

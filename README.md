@@ -1,277 +1,277 @@
 # AI Contract Drift Monitor
 
-Boilerplate completo para monitoramento de APIs externas com testes de contrato, detecção proativa de mudanças (drift) e alertas inteligentes com IA.
+Complete boilerplate for monitoring external APIs with contract testing, proactive change detection (drift), and intelligent AI-powered alerts.
 
-## 🎯 O que faz
+## 🎯 What it does
 
-- **Testes de Contrato**: Validação automática de schemas de APIs (Playwright + Zod)
-- **Drift Detection**: Monitoramento contínuo de mudanças em APIs externas
-- **Alertas Inteligentes**: Notificações no Teams com resumo de impacto via IA
-- **Métricas**: Exposição de métricas Prometheus para observabilidade
-- **CI/CD Ready**: Integração com GitHub Actions e pipelines
+- **Contract Testing**: Automatic validation of API schemas (Playwright + Zod)
+- **Drift Detection**: Continuous monitoring of changes in external APIs
+- **Intelligent Alerts**: Teams notifications with AI-powered impact summaries
+- **Metrics**: Prometheus metrics exposure for observability
+- **CI/CD Ready**: GitHub Actions and pipeline integration
 
-## 💡 Valor Real do Projeto
+## 💡 Real Project Value
 
-### **❌ Problemas que Resolve:**
+### **❌ Problems it Solves:**
 
-**Breaking Changes Silenciosos:**
-- APIs externas mudam sem aviso
-- Descobrimos que quebrou quando usuário reclama
+**Silent Breaking Changes:**
+- External APIs change without notice
+- We only discover it broke when users complain
 
-**Dependências Não Monitoradas:**
-- Você não sabe quando APIs que usa mudaram
-- GitHub API, APIs de pagamento, terceiros
+**Unmonitored Dependencies:**
+- You don't know when APIs you use have changed
+- GitHub API, payment APIs, third-party services
 
-**Alertas Técnicos vs. Negócio:**
-- Diferença entre "campo mudou" vs. "isso vai quebrar nossa integração"
+**Technical vs. Business Alerts:**
+- Difference between "field changed" vs. "this will break our integration"
 
-### **🎯 Cenários de Uso Reais:**
+### **🎯 Real Use Cases:**
 
-**🏢 Empresa usando APIs externas:**
-- GitHub API, APIs de pagamento, APIs de terceiros
-- Monitoramento proativo vs. reativo (descobrir quebrou quando usuário reclama)
+**🏢 Companies using external APIs:**
+- GitHub API, payment APIs, third-party services
+- Proactive vs. reactive monitoring (discover it broke when user complains)
 
 **🔄 CI/CD Pipeline:**
-- Testes de contrato como gate de qualidade
-- Drift check como early warning system
+- Contract tests as quality gate
+- Drift check as early warning system
 
-**📊 Observabilidade:**
-- Métricas de saúde do sistema de monitoramento
-- Dashboards mostrando estabilidade das dependências
+**📊 Observability:**
+- Health metrics of the monitoring system
+- Dashboards showing dependency stability
 
-### **🚀 Diferencial Competitivo:**
+### **🚀 Competitive Advantage:**
 
-**O que torna este projeto especial é a combinação:**
-- **Testes de contrato** (técnico)
-- **Drift detection** (proativo)
-- **IA para contextualização** (inteligente)
-- **Alertas integrados** (operacional)
+**What makes this project special is the combination:**
+- **Contract testing** (technical)
+- **Drift detection** (proactive)
+- **AI for contextualization** (intelligent)
+- **Integrated alerts** (operational)
 
-**Não é só "testar API" - é um sistema completo de guardrails para dependências externas.**
+**It's not just "testing APIs" - it's a complete guardrails system for external dependencies.**
 
-### **🤔 Ponderações Estratégicas:**
+### **🤔 Strategic Considerations:**
 
-**Pontos Fortes:**
-- ✅ Solução end-to-end
-- ✅ Integração com ferramentas existentes (Teams, Prometheus)
-- ✅ IA adiciona valor real, não é só "buzzword"
+**Strengths:**
+- ✅ End-to-end solution
+- ✅ Integration with existing tools (Teams, Prometheus)
+- ✅ AI adds real value, not just "buzzword"
 
-**Oportunidades:**
-- 🔄 Poderia expandir para APIs internas
-- 📧 Integração com mais canais de alerta (Slack, email)
-- 📊 Dashboard visual para visualizar drift ao longo do tempo
+**Opportunities:**
+- 🔄 Could expand to internal APIs
+- 📧 Integration with more alert channels (Slack, email)
+- 📊 Visual dashboard to view drift over time
 
-**O valor está na prevenção proativa de problemas, não na reação a eles.**
+**The value is in proactive problem prevention, not reaction to them.**
 
-## 📋 Requisitos
+## 📋 Requirements
 
 - Node.js 20+
-- Variáveis de ambiente (veja `.env.example`)
+- Environment variables (see `.env.example`)
 
-## ⚡ Instalação
+## ⚡ Installation
 
 ```bash
 npm install
 cp .env.example .env
-# Opcional: configure TEAMS_WEBHOOK_URL, AI_GATEWAY_URL, AI_API_KEY
+# Optional: configure TEAMS_WEBHOOK_URL, AI_GATEWAY_URL, AI_API_KEY
 ```
 
-## 🏃‍♂️ Uso
+## 🏃‍♂️ Usage
 
-### Testes de Contrato
+### Contract Tests
 ```bash
 npm run test:contracts
 ```
-Valida schemas de APIs e gera relatórios JUnit.
+Validates API schemas and generates JUnit reports.
 
 ### Drift Check
 ```bash
 npm run drift
 ```
-- **Primeira execução**: Cria snapshot inicial automaticamente
-- **Execuções seguintes**: Compara com snapshot anterior
-- **Mudanças detectadas**: Envia alertas (se configurado)
+- **First run**: Creates initial snapshot automatically
+- **Subsequent runs**: Compares with previous snapshot
+- **Changes detected**: Sends alerts (if configured)
 
-### Métricas Prometheus
+### Prometheus Metrics
 ```bash
 npm run metrics
-# Acesse: http://localhost:9090/metrics
+# Access: http://localhost:9090/metrics
 ```
 
-## ➕ Adicionando Novas APIs
+## ➕ Adding New APIs
 
-### 1. Adicionar em `targets.json`
+### 1. Add to `targets.json`
 ```json
 {
-  "id": "minha_api",
+  "id": "my_api",
   "method": "GET",
-  "url": "https://api.exemplo.com/dados",
+  "url": "https://api.example.com/data",
   "headers": {
     "Authorization": "Bearer token"
   }
 }
 ```
 
-### 2. Criar teste de contrato
+### 2. Create contract test
 ```typescript
-// tests/api/minha-api-contract.spec.ts
+// tests/api/my-api-contract.spec.ts
 import { test, expect, request as pwRequest } from '@playwright/test';
 import { z } from 'zod';
 
-const MeuSchema = z.object({
-  campo1: z.string(),
-  campo2: z.number()
+const MySchema = z.object({
+  field1: z.string(),
+  field2: z.number()
 });
 
-test('Minha API contract', async () => {
+test('My API contract', async () => {
   const req = await pwRequest.newContext();
-  const res = await req.get('https://api.exemplo.com/dados');
+  const res = await req.get('https://api.example.com/data');
   
   expect(res.status()).toBe(200);
   const json = await res.json();
   
-  const parsed = MeuSchema.safeParse(json);
+  const parsed = MySchema.safeParse(json);
   expect(parsed.success).toBe(true);
 });
 ```
 
-### 3. Rodar drift check
+### 3. Run drift check
 ```bash
 npm run drift
-# Cria snapshot automaticamente para a nova API
+# Creates snapshot automatically for the new API
 ```
 
-## 🤖 Resumo com IA
+## 🤖 AI-Powered Summaries
 
-Configure `AI_GATEWAY_URL` e `AI_API_KEY` no `.env` para ativar resumos inteligentes:
+Configure `AI_GATEWAY_URL` and `AI_API_KEY` in `.env` to enable intelligent summaries:
 
-**Sem IA:**
+**Without AI:**
 ```
-Campo 'deprecated' foi adicionado ao schema
-```
-
-**Com IA:**
-```
-⚠️ Campo 'deprecated' adicionado - indica que API pode ser descontinuada em breve, consumidores devem migrar
+Field 'deprecated' was added to schema
 ```
 
-## 📢 Notificações
+**With AI:**
+```
+⚠️ Field 'deprecated' added - indicates API may be discontinued soon, consumers should migrate
+```
 
-### **Sempre Notifica (Sucesso ou Mudanças):**
+## 📢 Notifications
 
-**✅ Sem Mudanças:**
-- Título: "API Contracts Status - All Good"
-- Conteúdo: Status de todas as APIs monitoradas
-- Detalhes: Quantas APIs estão estáveis
+### **Always Notifies (Success or Changes):**
 
-**⚠️ Com Mudanças:**
-- Título: "API Drift Detected"
-- Conteúdo: Resumo inteligente com IA
-- Detalhes: APIs afetadas e impacto
+**✅ No Changes:**
+- Title: "API Contracts Status - All Good"
+- Content: Status of all monitored APIs
+- Details: How many APIs are stable
 
-### **Canais de Notificação:**
+**⚠️ With Changes:**
+- Title: "API Drift Detected"
+- Content: Intelligent AI summary
+- Details: Affected APIs and impact
 
-1. **Microsoft Teams** (prioritário)
+### **Notification Channels:**
+
+1. **Microsoft Teams** (priority)
    - Configure `TEAMS_WEBHOOK_URL`
-   - Cards formatados com detalhes
+   - Formatted cards with details
 
 2. **Email** (fallback)
-   - Configure `SMTP_*` e `EMAIL_TO`
-   - HTML formatado profissionalmente
+   - Configure `SMTP_*` and `EMAIL_TO`
+   - Professional HTML formatting
 
-3. **Console** (sempre)
-   - Output colorido no terminal
-   - Timestamp e detalhes completos
+3. **Console** (always)
+   - Colored terminal output
+   - Timestamp and complete details
 
-### **Configuração de Email:**
+### **Email Configuration:**
 ```bash
 # .env
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=seu-email@gmail.com
-SMTP_PASS=sua-senha-de-app
-EMAIL_TO=destinatario@exemplo.com
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+EMAIL_TO=recipient@example.com
 ```
 
-## 📊 Exemplos de APIs Monitoradas
+## 📊 Monitored API Examples
 
-- **REST APIs**: GitHub, Frankfurter (câmbio)
+- **REST APIs**: GitHub, Frankfurter (currency)
 - **GraphQL**: Rick and Morty API
-- **APIs com autenticação**: Headers customizados
-- **APIs internas**: Qualquer endpoint HTTP/HTTPS
+- **APIs with authentication**: Custom headers
+- **Internal APIs**: Any HTTP/HTTPS endpoint
 
 ## 🔄 CI/CD Pipeline
 
 ### GitHub Actions Workflow
 
-Pipeline completo configurado em `.github/workflows/contract-monitoring.yml`:
+Complete pipeline configured in `.github/workflows/contract-monitoring.yml`:
 
 **Triggers:**
-- Push para `main` e `develop`
-- Pull requests para `main`
-- Cron diário às 9h UTC
-- Execução manual (`workflow_dispatch`)
+- Push to `main` and `develop`
+- Pull requests to `main`
+- Daily cron at 9 AM UTC
+- Manual execution (`workflow_dispatch`)
 
 **Jobs:**
 
 1. **Contract Tests**
-   - Instala dependências
-   - Executa testes de contrato
-   - Gera relatórios JUnit
-   - Upload de artefatos
+   - Install dependencies
+   - Run contract tests
+   - Generate JUnit reports
+   - Upload artifacts
 
 2. **Drift Detection**
-   - Executa drift check
-   - Detecta mudanças nos schemas
-   - Envia notificações (Teams/Email)
-   - Commit automático de snapshots
+   - Run drift check
+   - Detect schema changes
+   - Send notifications (Teams/Email)
+   - Automatic snapshot commits
 
 3. **Prometheus Metrics**
-   - Inicia servidor de métricas
+   - Start metrics server
    - Health check
-   - Relatório de status
+   - Status report
 
-**Configuração de Secrets:**
+**Secrets Configuration:**
 ```bash
-# No GitHub: Settings > Secrets and variables > Actions
+# In GitHub: Settings > Secrets and variables > Actions
 
-# AI Configuration (opcional)
-AI_GATEWAY_URL=https://sua-ia-gateway.com
-AI_API_KEY=sua-chave-ia
+# AI Configuration (optional)
+AI_GATEWAY_URL=https://your-ai-gateway.com
+AI_API_KEY=your-ai-key
 
-# Teams Notifications (opcional)
+# Teams Notifications (optional)
 TEAMS_WEBHOOK_URL=https://teams.webhook.url
 
-# Email Notifications (opcional)
+# Email Notifications (optional)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=seu-email@gmail.com
-SMTP_PASS=sua-senha-de-app
-SMTP_FROM=seu-email@gmail.com
-EMAIL_TO=destinatario@exemplo.com
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+SMTP_FROM=your-email@gmail.com
+EMAIL_TO=recipient@example.com
 ```
 
-**Artefatos Gerados:**
-- `test-results/` - Relatórios JUnit
-- `api-snapshots/` - Snapshots das APIs
-- Métricas Prometheus
+**Generated Artifacts:**
+- `test-results/` - JUnit reports
+- `api-snapshots/` - API snapshots
+- Prometheus metrics
 
-## 📈 Métricas Disponíveis
+## 📈 Available Metrics
 
-- CPU e memória do sistema
+- CPU and system memory
 - Event loop lag
-- Métricas de processo Node.js
+- Node.js process metrics
 - Health checks
 
-## 🛠️ Tecnologias
+## 🛠️ Technologies
 
-- **Playwright**: Testes de contrato HTTP
-- **Zod**: Validação de schemas
-- **Prometheus**: Métricas e observabilidade
-- **Microsoft Teams**: Alertas e notificações
-- **TypeScript**: Tipagem e desenvolvimento
-- **Node.js**: Runtime e automação
+- **Playwright**: HTTP contract testing
+- **Zod**: Schema validation
+- **Prometheus**: Metrics and observability
+- **Microsoft Teams**: Alerts and notifications
+- **TypeScript**: Typing and development
+- **Node.js**: Runtime and automation
 
-## 📄 Licença
+## 📄 License
 
 MIT

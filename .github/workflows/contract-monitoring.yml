@@ -92,12 +92,14 @@ jobs:
         
     - name: Commit snapshot changes
       if: steps.changes.outputs.has_changes == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add snapshots/latest.json
         git commit -m "chore: update API snapshots [skip ci]" || exit 0
-        git push
+        git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
         
     - name: Upload snapshots
       uses: actions/upload-artifact@v4

@@ -6,12 +6,12 @@ export async function summarizeDiff(
   const plain = JSON.stringify(diff);
   if (!aiUrl || !apiKey) {
     const truncated = plain.length > 1200 ? plain.slice(0, 1200) + '…' : plain;
-    return `Resumo desativado (sem credenciais de IA). Diff: ${truncated}`;
+    return `AI summary disabled (no AI credentials). Diff: ${truncated}`;
   }
 
   const body = {
-    system: 'Você é um analista que resume impactos de mudanças de schema de APIs para consumidores.',
-    user: `Gere um resumo curto, claro e objetivo do impacto do diff abaixo para consumidores de API. Foque no que pode quebrar integrações ou exigir ajustes. Diff: ${plain}`
+    system: 'You are an analyst who summarizes the impact of API schema changes for consumers.',
+    user: `Generate a short, clear and objective summary of the impact of the diff below for API consumers. Focus on what might break integrations or require adjustments. Diff: ${plain}`
   };
 
   const res = await fetch(aiUrl, {

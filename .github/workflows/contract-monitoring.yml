@@ -133,7 +133,6 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🔗 Quick Links" >> $GITHUB_STEP_SUMMARY
         echo "- 📊 [Grafana Dashboard](http://localhost:3001)" >> $GITHUB_STEP_SUMMARY
-        echo "- 📈 [Prometheus](http://localhost:9090)" >> $GITHUB_STEP_SUMMARY
         echo "- 📸 [View Snapshots](https://github.com/${{ github.repository }}/tree/main/snapshots)" >> $GITHUB_STEP_SUMMARY
         echo "- 📝 [Latest Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
         

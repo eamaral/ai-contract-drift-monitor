@@ -183,10 +183,10 @@ jobs:
     - name: Health check and metrics validation
       run: |
         # Health check
-        curl -f http://localhost:9090/health || exit 1
+        curl -f http://localhost:9091/health || exit 1
         
         # Metrics validation
-        METRICS_RESPONSE=$(curl -s http://localhost:9090/metrics)
+        METRICS_RESPONSE=$(curl -s http://localhost:9091/metrics)
         echo "Metrics endpoint responding: ✅"
         
         # Check for key metrics
@@ -209,7 +209,7 @@ jobs:
         echo "## 📊 System Health & Metrics Report" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**APIs Monitored:** $(cat snapshots/latest.json | jq 'keys | length')" >> $GITHUB_STEP_SUMMARY
-        echo "**Prometheus Server:** ✅ Running on port 9090" >> $GITHUB_STEP_SUMMARY
+        echo "**Metrics Server:** ✅ Running on port 9091" >> $GITHUB_STEP_SUMMARY
         echo "**Health Check:** ✅ OK" >> $GITHUB_STEP_SUMMARY
         echo "**Metrics Endpoint:** ✅ Responding" >> $GITHUB_STEP_SUMMARY
         echo "**Last Check:** $(date -u)" >> $GITHUB_STEP_SUMMARY

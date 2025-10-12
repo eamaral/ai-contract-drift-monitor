@@ -93,7 +93,7 @@ jobs:
         SMTP_PASS: ${{ secrets.SMTP_PASS }}
         SMTP_FROM: ${{ secrets.SMTP_FROM }}
         EMAIL_TO: ${{ secrets.EMAIL_TO }}
-      run: npx tsx scripts/drift-check.ts
+      run: npx tsx src/application/use-cases/drift-check.ts
       
     - name: Check for changes
       id: changes
@@ -153,7 +153,7 @@ jobs:
         echo "- 📝 [Latest Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
         
         # Send notification even if no changes
-        npx tsx scripts/drift-check.ts
+        npx tsx src/application/use-cases/drift-check.ts
 
   metrics:
     name: Prometheus Metrics & Health Check

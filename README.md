@@ -234,9 +234,21 @@ Pipeline completo configurado em `.github/workflows/contract-monitoring.yml`:
 **Configuração de Secrets:**
 ```bash
 # No GitHub: Settings > Secrets and variables > Actions
+
+# AI Configuration (opcional)
 AI_GATEWAY_URL=https://sua-ia-gateway.com
 AI_API_KEY=sua-chave-ia
+
+# Teams Notifications (opcional)
 TEAMS_WEBHOOK_URL=https://teams.webhook.url
+
+# Email Notifications (opcional)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=seu-email@gmail.com
+SMTP_PASS=sua-senha-de-app
+SMTP_FROM=seu-email@gmail.com
+EMAIL_TO=destinatario@exemplo.com
 ```
 
 **Artefatos Gerados:**

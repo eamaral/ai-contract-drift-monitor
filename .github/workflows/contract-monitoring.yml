@@ -28,8 +28,16 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      id: playwright-cache
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-browsers-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+        
     - name: Install Playwright browsers
-      run: npx playwright install --with-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      run: npx playwright install chromium --with-deps
       
     - name: Run contract tests
       run: npm run test:contracts
@@ -65,7 +73,13 @@ jobs:
         AI_GATEWAY_URL: ${{ secrets.AI_GATEWAY_URL }}
         AI_API_KEY: ${{ secrets.AI_API_KEY }}
         TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
-      run: npm run drift
+        SMTP_HOST: ${{ secrets.SMTP_HOST }}
+        SMTP_PORT: ${{ secrets.SMTP_PORT }}
+        SMTP_USER: ${{ secrets.SMTP_USER }}
+        SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        SMTP_FROM: ${{ secrets.SMTP_FROM }}
+        EMAIL_TO: ${{ secrets.EMAIL_TO }}
+      run: npx tsx scripts/drift-check.ts
       
     - name: Check for changes
       id: changes
@@ -91,6 +105,19 @@ jobs:
         name: api-snapshots
         path: snapshots/
         retention-days: 90
+        
+    - name: Send notification summary
+      if: always()
+      run: |
+        echo "## 📊 Drift Check Summary" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** ${{ steps.changes.outputs.has_changes == 'true' && '⚠️ Changes Detected' || '✅ All Good' }}" >> $GITHUB_STEP_SUMMARY
+        echo "**APIs Monitored:** $(cat snapshots/latest.json | jq 'keys | length')" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
+          echo "**Changes:** Snapshots updated and committed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Changes:** No changes detected" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
 
   metrics:
     name: Prometheus Metrics

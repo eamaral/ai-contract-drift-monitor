@@ -1,0 +1,31 @@
+[
+  {
+    "id": "fx_usd_eur",
+    "method": "GET",
+    "url": "https://api.frankfurter.app/latest?from=USD&to=EUR"
+  },
+  {
+    "id": "github_repo_ts",
+    "method": "GET",
+    "url": "https://api.github.com/repos/microsoft/TypeScript",
+    "headers": {
+      "User-Agent": "contract-poc"
+    }
+  },
+  {
+    "id": "rick_morty_graphql",
+    "method": "POST",
+    "url": "https://rickandmortyapi.com/graphql",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "query": "query { characters(page: 1) { results { id name status species } } }"
+    }
+  }
+]
+
+
+
+
+

@@ -1,0 +1,189 @@
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { summarizeDiff } from '../llm/summarize.ts';
+import { sendTeamsMessage } from '../reporting/teams.ts';
+import { sendConsoleMessage } from '../reporting/console.ts';
+import { sendEmailMessage } from '../reporting/email.ts';
+
+type Target = {
+  id: string;
+  method: string;
+  url: string;
+  headers?: Record<string, string>;
+  body?: unknown;
+};
+
+type Level1Schema = Record<string, string>;
+
+type Snapshot = Record<string, Level1Schema>; // key: target id
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const ROOT = path.resolve(__dirname, '..');
+const TARGETS_PATH = path.resolve(ROOT, 'tests', 'api', 'targets.json');
+const SNAPSHOT_DIR = path.resolve(ROOT, 'snapshots');
+const SNAPSHOT_FILE = path.resolve(SNAPSHOT_DIR, 'latest.json');
+
+function ensureDir(dir: string): void {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+function typeOfValue(value: unknown): string {
+  if (Array.isArray(value)) return 'array';
+  if (value === null) return 'null';
+  return typeof value;
+}
+
+function buildLevel1Schema(obj: unknown): Level1Schema {
+  if (obj === null || typeof obj !== 'object') return {};
+  const record = obj as Record<string, unknown>;
+  const schema: Level1Schema = {};
+  for (const [key, value] of Object.entries(record)) {
+    schema[key] = typeOfValue(value);
+  }
+  return schema;
+}
+
+function diffSchemas(prev: Level1Schema, curr: Level1Schema): { added: string[]; removed: string[] } {
+  const prevKeys = new Set(Object.keys(prev || {}));
+  const currKeys = new Set(Object.keys(curr || {}));
+  const added: string[] = [];
+  const removed: string[] = [];
+  for (const k of currKeys) if (!prevKeys.has(k)) added.push(k);
+  for (const k of prevKeys) if (!currKeys.has(k)) removed.push(k);
+  return { added, removed };
+}
+
+async function fetchJson(target: Target): Promise<unknown> {
+  const options: RequestInit = {
+    method: target.method || 'GET',
+    headers: target.headers
+  };
+  
+  if (target.body && (target.method === 'POST' || target.method === 'PUT' || target.method === 'PATCH')) {
+    options.body = JSON.stringify(target.body);
+    options.headers = {
+      ...options.headers,
+      'Content-Type': 'application/json'
+    };
+  }
+  
+  const res = await fetch(target.url, options);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Request failed for ${target.id}: ${res.status} ${res.statusText} - ${text}`);
+  }
+  return res.json();
+}
+
+async function main(): Promise<void> {
+  const rawTargets = fs.readFileSync(TARGETS_PATH, 'utf8');
+  const targets = JSON.parse(rawTargets) as Target[];
+
+  const previous: Snapshot = fs.existsSync(SNAPSHOT_FILE)
+    ? JSON.parse(fs.readFileSync(SNAPSHOT_FILE, 'utf8'))
+    : {};
+
+  const current: Snapshot = {};
+  const perTargetDiff: Record<string, { added: string[]; removed: string[] }> = {};
+
+  for (const t of targets) {
+    try {
+      const json = await fetchJson(t);
+      const schema = buildLevel1Schema(json);
+      current[t.id] = schema;
+      const prev = previous[t.id] || {};
+      const d = diffSchemas(prev, schema);
+      if (d.added.length || d.removed.length) {
+        perTargetDiff[t.id] = d;
+      }
+    } catch (err) {
+      console.error(`[drift] error for ${t.id}:`, err);
+    }
+  }
+
+  ensureDir(SNAPSHOT_DIR);
+  fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(current, null, 2));
+  console.log(`[drift] snapshot written: ${SNAPSHOT_FILE}`);
+
+  const changedTargets = Object.keys(perTargetDiff);
+  const totalTargets = Object.keys(current).length;
+  
+  let title: string;
+  let text: string;
+  let facts: { name: string; value: string }[];
+
+  if (changedTargets.length === 0) {
+    // No changes detected - send success notification
+    title = '✅ API Contracts Status - All Good';
+    text = `Todos os ${totalTargets} endpoints estão estáveis. Nenhuma mudança detectada nos schemas das APIs monitoradas.`;
+    facts = [
+      { name: 'APIs Monitoradas', value: String(totalTargets) },
+      { name: 'APIs com Mudanças', value: '0' },
+      { name: 'Status', value: '✅ Estável' }
+    ];
+  } else {
+    // Changes detected - send alert notification
+    const diffSummaryPlain = JSON.stringify(perTargetDiff, null, 2);
+    const aiUrl = process.env.AI_GATEWAY_URL || '';
+    const aiKey = process.env.AI_API_KEY || '';
+    let summary = '';
+    try {
+      summary = await summarizeDiff(aiUrl, aiKey, perTargetDiff);
+    } catch (e) {
+      console.warn('[drift] summarize failed, falling back to plain text');
+      summary = `Mudanças detectadas em ${changedTargets.length} endpoints. Diff:\n` + diffSummaryPlain;
+    }
+
+    title = '🚨 API Drift Detected';
+    text = summary;
+    facts = [
+      { name: 'APIs Monitoradas', value: String(totalTargets) },
+      { name: 'APIs com Mudanças', value: String(changedTargets.length) },
+      { name: 'APIs Afetadas', value: changedTargets.join(', ') },
+      { name: 'Status', value: '⚠️ Mudanças Detectadas' }
+    ];
+  }
+
+  // Send notification (Teams first, then console/email)
+  const webhookUrl = process.env.TEAMS_WEBHOOK_URL || '';
+  if (webhookUrl) {
+    try {
+      await sendTeamsMessage(webhookUrl, title, text, facts);
+      console.log('[drift] ✅ Teams message sent');
+    } catch (error) {
+      console.log('[drift] ❌ Teams failed, falling back to console');
+      await sendConsoleMessage(title, text, facts);
+    }
+  } else {
+    // Fallback to console notification
+    await sendConsoleMessage(title, text, facts);
+    
+    // Try email if configured
+    const emailTo = process.env.EMAIL_TO || '';
+    if (emailTo) {
+      try {
+        await sendEmailMessage(emailTo, title, text, facts);
+        console.log('[drift] ✅ Email sent to', emailTo);
+      } catch (error) {
+        console.log('[drift] ❌ Email failed:', error);
+      }
+    }
+  }
+}
+
+main().catch((e) => {
+  console.error('[drift] fatal error', e);
+  process.exitCode = 1;
+});
+
+
+
+
+
+

@@ -1,0 +1,123 @@
+name: AI Contract Drift Monitor
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run drift check daily at 9 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  contract-tests:
+    name: Contract Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+      
+    - name: Run contract tests
+      run: npm run test:contracts
+      
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: test-results/
+        retention-days: 30
+
+  drift-check:
+    name: Drift Detection
+    runs-on: ubuntu-latest
+    needs: contract-tests
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run drift check
+      env:
+        AI_GATEWAY_URL: ${{ secrets.AI_GATEWAY_URL }}
+        AI_API_KEY: ${{ secrets.AI_API_KEY }}
+        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      run: npm run drift
+      
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet snapshots/latest.json; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Commit snapshot changes
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add snapshots/latest.json
+        git commit -m "chore: update API snapshots [skip ci]" || exit 0
+        git push
+        
+    - name: Upload snapshots
+      uses: actions/upload-artifact@v4
+      with:
+        name: api-snapshots
+        path: snapshots/
+        retention-days: 90
+
+  metrics:
+    name: Prometheus Metrics
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Start metrics server
+      run: |
+        npm run metrics &
+        sleep 5
+        curl -f http://localhost:9090/health || exit 1
+        
+    - name: Generate metrics report
+      run: |
+        echo "## 📊 Metrics Report" >> $GITHUB_STEP_SUMMARY
+        echo "Prometheus metrics server is running on port 9090" >> $GITHUB_STEP_SUMMARY
+        echo "Health check: ✅ OK" >> $GITHUB_STEP_SUMMARY

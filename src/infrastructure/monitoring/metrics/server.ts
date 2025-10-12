@@ -6,7 +6,7 @@ import { register, collectDefaultMetrics } from 'prom-client';
 collectDefaultMetrics();
 
 const app = express();
-const port = process.env.METRICS_PORT || 9090;
+const port = process.env.METRICS_PORT || 9091;
 
 // Endpoint para métricas Prometheus
 app.get('/metrics', async (req, res) => {

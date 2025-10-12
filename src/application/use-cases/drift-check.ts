@@ -2,10 +2,10 @@ import 'dotenv/config';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { summarizeDiff } from '../llm/summarize.ts';
-import { sendTeamsMessage } from '../reporting/teams.ts';
-import { sendConsoleMessage } from '../reporting/console.ts';
-import { sendEmailMessage } from '../reporting/email.ts';
+import { summarizeDiff } from '../../infrastructure/llm/summarize.js';
+import { sendTeamsMessage } from '../../infrastructure/notifications/reporting/teams.js';
+import { sendConsoleMessage } from '../../infrastructure/notifications/reporting/console.js';
+import { sendEmailMessage } from '../../infrastructure/notifications/reporting/email.js';
 
 type Target = {
   id: string;
@@ -22,8 +22,8 @@ type Snapshot = Record<string, Level1Schema>; // key: target id
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const ROOT = path.resolve(__dirname, '..');
-const TARGETS_PATH = path.resolve(ROOT, 'tests', 'api', 'targets.json');
+const ROOT = path.resolve(__dirname, '../../..');
+const TARGETS_PATH = path.resolve(ROOT, 'src/infrastructure/api/tests', 'targets.json');
 const SNAPSHOT_DIR = path.resolve(ROOT, 'snapshots');
 const SNAPSHOT_FILE = path.resolve(SNAPSHOT_DIR, 'latest.json');
 

@@ -184,3 +184,8 @@ local/
 # Configuration files with secrets
 config/secrets.json
 config/production.json
+
+# Docker and monitoring
+docker-compose.override.yml
+grafana/data/
+prometheus/data/

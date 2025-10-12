@@ -1,0 +1,24 @@
+# Prometheus configuration for AI Contract Drift Monitor
+# This file configures Prometheus to scrape metrics from our monitoring system
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # Add alerting rules here if needed
+  # - "alert_rules.yml"
+
+scrape_configs:
+  # System metrics from Node Exporter
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+    
+  # Monitor our contract drift monitoring system
+  - job_name: 'contract-drift-monitor'
+    static_configs:
+      - targets: ['host.docker.internal:9091']
+    scrape_interval: 30s
+    metrics_path: '/metrics'

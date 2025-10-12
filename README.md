@@ -1,240 +1,87 @@
 # AI Contract Drift Monitor
 
-Complete boilerplate for monitoring external APIs with contract testing, proactive change detection (drift), and intelligent AI-powered alerts.
+> Professional boilerplate for monitoring external APIs with contract testing, proactive change detection (drift), and intelligent AI-powered alerts.
 
-## 🎯 What it does
+---
 
-- **Contract Testing**: Automatic validation of API schemas (Playwright + Zod)
-- **Drift Detection**: Continuous monitoring of changes in external APIs
-- **Intelligent Alerts**: Teams notifications with AI-powered impact summaries
-- **Metrics**: Prometheus metrics exposure for observability
-- **CI/CD Ready**: GitHub Actions and pipeline integration
+## 🎯 What This Project Does
 
-## 💡 Real Project Value
+**Problem:** External APIs change without warning, breaking your production systems. You discover issues only when users complain.
 
-### **❌ Problems it Solves:**
+**Solution:** This project provides:
 
-**Silent Breaking Changes:**
-- External APIs change without notice
-- We only discover it broke when users complain
+1. **📸 Automatic Snapshots** - Captures API schemas automatically on first run
+2. **🔍 Drift Detection** - Monitors APIs continuously for changes
+3. **🤖 AI-Powered Analysis** - Explains what changed and the impact
+4. **📢 Smart Alerts** - Notifies you via Teams, Email, or Console
+5. **📊 Visual Monitoring** - Ensures the monitoring system itself is healthy (meta-monitoring)
 
-**Unmonitored Dependencies:**
-- You don't know when APIs you use have changed
-- GitHub API, payment APIs, third-party services
+**Key Differentiator:** Not just testing - it's a complete monitoring system that learns your API structure and alerts you proactively when things change.
 
-**Technical vs. Business Alerts:**
-- Difference between "field changed" vs. "this will break our integration"
+---
 
-### **🎯 Real Use Cases:**
+## 🏗️ Architecture
 
-**🏢 Companies using external APIs:**
-- GitHub API, payment APIs, third-party services
-- Proactive vs. reactive monitoring (discover it broke when user complains)
+This project follows **Clean Architecture** principles with clear separation of concerns:
 
-**🔄 CI/CD Pipeline:**
-- Contract tests as quality gate
-- Drift check as early warning system
-
-**📊 Observability:**
-- Health metrics of the monitoring system
-- Dashboards showing dependency stability
-
-### **🚀 Competitive Advantage:**
-
-**What makes this project special is the combination:**
-- **Contract testing** (technical)
-- **Drift detection** (proactive)
-- **AI for contextualization** (intelligent)
-- **Integrated alerts** (operational)
-
-**It's not just "testing APIs" - it's a complete guardrails system for external dependencies.**
-
-### **🤔 Strategic Considerations:**
-
-**Strengths:**
-- ✅ End-to-end solution
-- ✅ Integration with existing tools (Teams, Prometheus)
-- ✅ AI adds real value, not just "buzzword"
-
-**Opportunities:**
-- 🔄 Could expand to internal APIs
-- 📧 Integration with more alert channels (Slack, email)
-- 📊 Visual dashboard to view drift over time
-
-**The value is in proactive problem prevention, not reaction to them.**
-
-## 📋 Requirements
-
-- Node.js 20+
-- Environment variables (see `.env.example`)
-
-## ⚡ Installation
-
-```bash
-npm install
-cp .env.example .env
-# Optional: configure TEAMS_WEBHOOK_URL, AI_GATEWAY_URL, AI_API_KEY
+```
+src/
+├── domain/                 # Business logic & entities
+│   ├── entities/          # Core business entities
+│   └── repositories/      # Repository interfaces
+├── application/           # Use cases & orchestration
+│   └── use-cases/        # Business use cases
+└── infrastructure/        # External concerns
+    ├── api/
+    │   └── tests/        # Contract tests
+    ├── llm/              # AI integration
+    ├── monitoring/       # Metrics & monitoring
+    └── notifications/    # Alert channels
 ```
 
-## 🏃‍♂️ Usage
+## 🚀 Quick Start
 
-### Contract Tests
+### 1. Start the monitoring stack:
 ```bash
-npm run test:contracts
+npm run start
 ```
-Validates API schemas and generates JUnit reports.
 
-### Drift Check
+### 2. Access Grafana:
+- **URL:** http://localhost:3001
+- **Login:** admin / admin
+- **Dashboard:** Will load automatically!
+
+### 3. Run drift check:
 ```bash
 npm run drift
 ```
-- **First run**: Creates initial snapshot automatically
-- **Subsequent runs**: Compares with previous snapshot
-- **Changes detected**: Sends alerts (if configured)
 
-### Prometheus Metrics
+## 📊 What You Get
+
+- ✅ **Contract Testing** - API schema validation with Playwright
+- ✅ **Drift Detection** - Proactive change monitoring of external APIs
+- ✅ **AI Summaries** - Intelligent impact analysis of changes
+- ✅ **Multi-channel Alerts** - Teams, Email, Console
+- ✅ **Automatic Dashboard** - Loads on first access
+- ✅ **System Health Metrics** - Monitor the monitoring system (CPU, Memory, Disk, Network)
+- ✅ **Meta-Monitoring** - Redundancy layer ensuring the monitor itself is healthy
+
+## 🎯 Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run start` | Start Docker services (Prometheus, Grafana, Node Exporter) |
+| `npm run drift` | Run drift check and detect API changes |
+| `npm run metrics` | Start application metrics server (port 9091) |
+| `npm run test:contracts` | Run contract tests with Playwright |
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file:
+
 ```bash
-npm run metrics
-# Access: http://localhost:9090/metrics
-```
-
-## ➕ Adding New APIs
-
-### 1. Add to `targets.json`
-```json
-{
-  "id": "my_api",
-  "method": "GET",
-  "url": "https://api.example.com/data",
-  "headers": {
-    "Authorization": "Bearer token"
-  }
-}
-```
-
-### 2. Create contract test
-```typescript
-// tests/api/my-api-contract.spec.ts
-import { test, expect, request as pwRequest } from '@playwright/test';
-import { z } from 'zod';
-
-const MySchema = z.object({
-  field1: z.string(),
-  field2: z.number()
-});
-
-test('My API contract', async () => {
-  const req = await pwRequest.newContext();
-  const res = await req.get('https://api.example.com/data');
-  
-  expect(res.status()).toBe(200);
-  const json = await res.json();
-  
-  const parsed = MySchema.safeParse(json);
-  expect(parsed.success).toBe(true);
-});
-```
-
-### 3. Run drift check
-```bash
-npm run drift
-# Creates snapshot automatically for the new API
-```
-
-## 🤖 AI-Powered Summaries
-
-Configure `AI_GATEWAY_URL` and `AI_API_KEY` in `.env` to enable intelligent summaries:
-
-**Without AI:**
-```
-Field 'deprecated' was added to schema
-```
-
-**With AI:**
-```
-⚠️ Field 'deprecated' added - indicates API may be discontinued soon, consumers should migrate
-```
-
-## 📢 Notifications
-
-### **Always Notifies (Success or Changes):**
-
-**✅ No Changes:**
-- Title: "API Contracts Status - All Good"
-- Content: Status of all monitored APIs
-- Details: How many APIs are stable
-
-**⚠️ With Changes:**
-- Title: "API Drift Detected"
-- Content: Intelligent AI summary
-- Details: Affected APIs and impact
-
-### **Notification Channels:**
-
-1. **Microsoft Teams** (priority)
-   - Configure `TEAMS_WEBHOOK_URL`
-   - Formatted cards with details
-
-2. **Email** (fallback)
-   - Configure `SMTP_*` and `EMAIL_TO`
-   - Professional HTML formatting
-
-3. **Console** (always)
-   - Colored terminal output
-   - Timestamp and complete details
-
-### **Email Configuration:**
-```bash
-# .env
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-EMAIL_TO=recipient@example.com
-```
-
-## 📊 Monitored API Examples
-
-- **REST APIs**: GitHub, Frankfurter (currency)
-- **GraphQL**: Rick and Morty API
-- **APIs with authentication**: Custom headers
-- **Internal APIs**: Any HTTP/HTTPS endpoint
-
-## 🔄 CI/CD Pipeline
-
-### GitHub Actions Workflow
-
-Complete pipeline configured in `.github/workflows/contract-monitoring.yml`:
-
-**Triggers:**
-- Push to `main` and `develop`
-- Pull requests to `main`
-- Daily cron at 9 AM UTC
-- Manual execution (`workflow_dispatch`)
-
-**Jobs:**
-
-1. **Contract Tests**
-   - Install dependencies
-   - Run contract tests
-   - Generate JUnit reports
-   - Upload artifacts
-
-2. **Drift Detection**
-   - Run drift check
-   - Detect schema changes
-   - Send notifications (Teams/Email)
-   - Automatic snapshot commits
-
-3. **Prometheus Metrics**
-   - Start metrics server
-   - Health check
-   - Status report
-
-**Secrets Configuration:**
-```bash
-# In GitHub: Settings > Secrets and variables > Actions
-
 # AI Configuration (optional)
 AI_GATEWAY_URL=https://your-ai-gateway.com
 AI_API_KEY=your-ai-key
@@ -251,26 +98,152 @@ SMTP_FROM=your-email@gmail.com
 EMAIL_TO=recipient@example.com
 ```
 
-**Generated Artifacts:**
-- `test-results/` - JUnit reports
-- `api-snapshots/` - API snapshots
-- Prometheus metrics
+## 🆕 Adding New APIs to Monitor
 
-## 📈 Available Metrics
+### Step 1: Define the API Target
 
-- CPU and system memory
-- Event loop lag
-- Node.js process metrics
-- Health checks
+Add to `src/infrastructure/api/tests/targets.json`:
+
+```json
+{
+  "id": "my_api",
+  "method": "GET",
+  "url": "https://api.example.com/data",
+  "headers": {
+    "Authorization": "Bearer YOUR_TOKEN"  // Optional
+  }
+}
+```
+
+### Step 2: Create Contract Test
+
+Create `src/infrastructure/api/tests/my-api-contract.spec.ts`:
+
+```typescript
+import { test, expect, request as pwRequest } from '@playwright/test';
+import { z } from 'zod';
+
+const MySchema = z.object({
+  field: z.string()
+});
+
+test('My API contract', async () => {
+  const req = await pwRequest.newContext();
+  const res = await req.get('https://api.example.com/data');
+  expect(res.status()).toBe(200);
+  const json = await res.json();
+  expect(MySchema.safeParse(json).success).toBe(true);
+});
+```
+
+### Step 3: Run Drift Check (The Magic! ✨)
+
+```bash
+npm run drift
+```
+
+**What happens:**
+
+1. **📸 First Run - Snapshot Creation:**
+   - Fetches the API response
+   - Extracts the schema structure (keys and types)
+   - **Automatically creates** `snapshots/latest.json`
+   - Saves the baseline for future comparisons
+
+2. **🔍 Subsequent Runs - Drift Detection:**
+   - Fetches current API response
+   - Compares with saved snapshot
+   - Detects any schema changes (new fields, removed fields, type changes)
+   - If changes detected:
+     - 🤖 AI generates impact summary
+     - 📢 Sends alerts (Teams/Email/Console)
+     - 💾 Updates snapshot with new structure
+     - 🔄 **Auto-commits** updated snapshot to repository (in CI/CD)
+
+**Example Snapshot:**
+```json
+{
+  "my_api": {
+    "field": "string",
+    "count": "number",
+    "active": "boolean"
+  }
+}
+```
+
+**This is the core value:** You don't need to manually define schemas. The system learns your API structure automatically and monitors it forever! 🎯
+
+---
+
+## 🔄 Automatic Snapshot Commits (CI/CD Only)
+
+**When running in GitHub Actions**, detected changes trigger an automatic workflow:
+
+### What Happens:
+1. **Drift detected** → API schema changed
+2. **Snapshot updated** → New structure saved to `snapshots/latest.json`
+3. **Auto-commit** → GitHub Actions commits the change:
+   ```
+   chore: update API snapshots [skip ci]
+   ```
+4. **Push to main** → Changes pushed automatically
+5. **No PR needed** → Direct commit to main branch
+
+### Why Direct Commit?
+- ✅ Snapshots are **non-breaking changes** (just documentation)
+- ✅ You already received **alerts** (Teams/Email) about the change
+- ✅ You can **review the commit** in GitHub history
+- ✅ If needed, you can **revert** the commit
+
+### Review Process:
+1. **Alert received** → Check Teams/Email notification
+2. **AI Summary** → Understand the impact
+3. **GitHub commit** → Review snapshot diff in repository
+4. **Action** → If problematic, revert or contact API owner
+
+**Note:** The `[skip ci]` flag prevents infinite loops by not triggering another pipeline run.
+
+---
+
+## 📈 Monitoring Stack (Meta-Monitoring)
+
+**Purpose:** Monitor the monitoring system itself - ensure your drift detection is always running.
+
+- **Prometheus** (http://localhost:9090) - Collects metrics from the monitoring infrastructure
+- **Grafana** (http://localhost:3001) - Visual dashboard showing system health
+- **Node Exporter** (http://localhost:9100) - System metrics (CPU, Memory, Disk, Network)
+
+**What it monitors:**
+- ✅ Is the drift check service running?
+- ✅ Is the system healthy? (CPU, RAM, Disk)
+- ✅ Are there any performance issues?
+
+**Think of it as:** A redundancy layer - if your monitoring system goes down, you'll know immediately from the dashboard. It's "monitoring the monitor" to ensure reliability.
+
+## 💡 AI-Powered Summaries
+
+Configure `AI_GATEWAY_URL` and `AI_API_KEY` in `.env` to enable intelligent impact analysis:
+
+**Without AI:**
+```
+Field 'deprecated' was added to schema
+```
+
+**With AI:**
+```
+⚠️ Field 'deprecated' added - indicates API may be discontinued soon, consumers should migrate
+```
+
+The AI analyzes schema changes and explains business impact, not just technical diff.
 
 ## 🛠️ Technologies
 
-- **Playwright**: HTTP contract testing
-- **Zod**: Schema validation
-- **Prometheus**: Metrics and observability
-- **Microsoft Teams**: Alerts and notifications
-- **TypeScript**: Typing and development
-- **Node.js**: Runtime and automation
+- **TypeScript** - Type-safe development
+- **Playwright** - HTTP contract testing
+- **Zod** - Schema validation
+- **Prometheus** - Metrics & observability
+- **Grafana** - Dashboards & visualization
+- **Docker** - Containerized infrastructure
 
 ## 📄 License
 

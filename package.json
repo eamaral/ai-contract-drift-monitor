@@ -8,9 +8,10 @@
     "node": ">=20"
   },
   "scripts": {
-    "test:contracts": "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 playwright test tests/api --reporter=list,junit --output=./test-results --project=chromium",
-    "drift": "tsx scripts/drift-check.ts",
-    "metrics": "tsx metrics/server.ts"
+    "test:contracts": "playwright test --reporter=list,junit --output=./test-results --project=chromium",
+    "drift": "tsx src/application/use-cases/drift-check.ts",
+    "metrics": "METRICS_PORT=9091 tsx src/infrastructure/monitoring/metrics/server.ts",
+    "start": "docker-compose up -d && echo '✅ Services started! Access Grafana at http://localhost:3001 (admin/admin)'"
   },
   "keywords": [
     "playwright",

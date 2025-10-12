@@ -48,21 +48,6 @@ jobs:
       with:
         name: test-results
         path: test-results/
-        
-    - name: Test summary
-      if: always()
-      run: |
-        echo "## ✅ Contract Tests Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Status:** Tests completed" >> $GITHUB_STEP_SUMMARY
-        echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 🔗 Useful Links" >> $GITHUB_STEP_SUMMARY
-        echo "- 📊 [Grafana Dashboard](http://localhost:3001) - Login: admin/admin" >> $GITHUB_STEP_SUMMARY
-        echo "- 📈 [Prometheus Metrics](http://localhost:9090)" >> $GITHUB_STEP_SUMMARY
-        echo "- 🧪 [View Test Results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "> **Note:** To view the dashboard locally, run \`npm run start\` and access http://localhost:3001"
 
   drift-check:
     name: Drift Detection
@@ -231,33 +216,6 @@ jobs:
           metrics_summary.md
         retention-days: 30
         
-    - name: Generate comprehensive health report
-      run: |
-        echo "## 📊 System Health & Metrics Report" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**APIs Monitored:** $(cat snapshots/latest.json | jq 'keys | length')" >> $GITHUB_STEP_SUMMARY
-        echo "**Metrics Server:** ✅ Running on port 9091" >> $GITHUB_STEP_SUMMARY
-        echo "**Health Check:** ✅ OK" >> $GITHUB_STEP_SUMMARY
-        echo "**Metrics Endpoint:** ✅ Responding" >> $GITHUB_STEP_SUMMARY
-        echo "**Last Check:** $(date -u)" >> $GITHUB_STEP_SUMMARY
-        echo "**Status:** ✅ System Healthy" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 📈 Available Metrics:" >> $GITHUB_STEP_SUMMARY
-        echo "- CPU and memory usage" >> $GITHUB_STEP_SUMMARY
-        echo "- Event loop lag" >> $GITHUB_STEP_SUMMARY
-        echo "- Node.js process metrics" >> $GITHUB_STEP_SUMMARY
-        echo "- HTTP request metrics" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 💾 Metrics Snapshot" >> $GITHUB_STEP_SUMMARY
-        echo "Metrics saved as artifact: **metrics-snapshot-${{ github.run_id }}**" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 🔗 Access Dashboard" >> $GITHUB_STEP_SUMMARY
-        echo "To view the dashboard locally:" >> $GITHUB_STEP_SUMMARY
-        echo "1. Run: \`npm run start\`" >> $GITHUB_STEP_SUMMARY
-        echo "2. Access: [http://localhost:3001](http://localhost:3001)" >> $GITHUB_STEP_SUMMARY
-        echo "3. Login: **admin** / **admin**" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "📈 [View Prometheus Metrics](http://localhost:9090/metrics)" >> $GITHUB_STEP_SUMMARY
         
     - name: Stop metrics server
       if: always()

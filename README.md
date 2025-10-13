@@ -241,19 +241,35 @@ npm run drift
 
 ## 💡 AI-Powered Summaries
 
-Configure `AI_GATEWAY_URL` and `AI_API_KEY` in `.env` to enable intelligent impact analysis:
+Enable intelligent impact analysis with **Groq (100% FREE!)**:
+
+### Quick Setup (2 minutes)
+
+1. Get free API key: **https://console.groq.com/keys**
+2. Add to `.env`:
+   ```bash
+   AI_GATEWAY_URL=https://api.groq.com/openai/v1/chat/completions
+   AI_API_KEY=gsk_your_key_here
+   ```
+3. Done! AI is now active.
+
+**See:** `GROQ_SETUP.md` for detailed instructions.
+
+### Example Output
 
 **Without AI:**
 ```
 Field 'deprecated' was added to schema
 ```
 
-**With AI:**
+**With AI (Groq):**
 ```
-⚠️ Field 'deprecated' added - indicates API may be discontinued soon, consumers should migrate
+⚠️ The 'deprecated' field signals potential API retirement. 
+Consumers should monitor for deprecation notices and prepare 
+migration paths to avoid service disruption.
 ```
 
-The AI analyzes schema changes and explains business impact, not just technical diff.
+The AI analyzes schema changes and explains **business impact**, not just technical diff.
 
 ## 🛠️ Technologies
 

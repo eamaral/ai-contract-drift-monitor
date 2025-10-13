@@ -6,6 +6,12 @@ import { summarizeDiff } from '../../infrastructure/llm/summarize.js';
 import { sendTeamsMessage } from '../../infrastructure/notifications/reporting/teams.js';
 import { sendConsoleMessage } from '../../infrastructure/notifications/reporting/console.js';
 import { sendEmailMessage } from '../../infrastructure/notifications/reporting/email.js';
+import { 
+  isGraphQLTarget, 
+  INTROSPECTION_QUERY, 
+  extractGraphQLSchema,
+  type GraphQLIntrospectionResult
+} from '../../infrastructure/api/graphql-introspection.js';
 
 type Target = {
   id: string;
@@ -60,12 +66,25 @@ function diffSchemas(prev: Level1Schema, curr: Level1Schema): { added: string[];
 }
 
 async function fetchJson(target: Target): Promise<unknown> {
+  // Check if it's a GraphQL endpoint
+  const isGraphQL = isGraphQLTarget(target.url, target.body);
+  
   const options: RequestInit = {
     method: target.method || 'GET',
     headers: target.headers
   };
   
-  if (target.body && (target.method === 'POST' || target.method === 'PUT' || target.method === 'PATCH')) {
+  // For GraphQL, use introspection query instead of user query
+  if (isGraphQL && target.method === 'POST') {
+    console.log(`[drift] Using GraphQL introspection for ${target.id}`);
+    options.body = JSON.stringify({
+      query: INTROSPECTION_QUERY
+    });
+    options.headers = {
+      ...options.headers,
+      'Content-Type': 'application/json'
+    };
+  } else if (target.body && (target.method === 'POST' || target.method === 'PUT' || target.method === 'PATCH')) {
     options.body = JSON.stringify(target.body);
     options.headers = {
       ...options.headers,
@@ -78,7 +97,15 @@ async function fetchJson(target: Target): Promise<unknown> {
     const text = await res.text();
     throw new Error(`Request failed for ${target.id}: ${res.status} ${res.statusText} - ${text}`);
   }
-  return res.json();
+  
+  const json = await res.json();
+  
+  // If GraphQL introspection, extract simplified schema
+  if (isGraphQL && json.data && '__schema' in json.data) {
+    return extractGraphQLSchema(json.data as GraphQLIntrospectionResult);
+  }
+  
+  return json;
 }
 
 async function main(): Promise<void> {
@@ -95,7 +122,12 @@ async function main(): Promise<void> {
   for (const t of targets) {
     try {
       const json = await fetchJson(t);
-      const schema = buildLevel1Schema(json);
+      
+      // For GraphQL, json is already the extracted schema
+      // For REST, we need to extract it
+      const isGraphQL = isGraphQLTarget(t.url, t.body);
+      const schema = isGraphQL ? (json as Level1Schema) : buildLevel1Schema(json);
+      
       current[t.id] = schema;
       const prev = previous[t.id] || {};
       const d = diffSchemas(prev, schema);

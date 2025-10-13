@@ -92,6 +92,52 @@
     "subscribers_count": "number"
   },
   "rick_morty_graphql": {
-    "data": "object"
+    "Character": [
+      "created:String",
+      "episode:NON_NULL",
+      "gender:String",
+      "id:ID",
+      "image:String",
+      "location:Location",
+      "name:String",
+      "origin:Location",
+      "species:String",
+      "status:String",
+      "type:String"
+    ],
+    "Location": [
+      "created:String",
+      "dimension:String",
+      "id:ID",
+      "name:String",
+      "residents:NON_NULL",
+      "type:String"
+    ],
+    "Episode": [
+      "air_date:String",
+      "characters:NON_NULL",
+      "created:String",
+      "episode:String",
+      "id:ID",
+      "name:String"
+    ],
+    "Characters": [
+      "info:Info",
+      "results:Character"
+    ],
+    "Info": [
+      "count:Int",
+      "next:Int",
+      "pages:Int",
+      "prev:Int"
+    ],
+    "Locations": [
+      "info:Info",
+      "results:Location"
+    ],
+    "Episodes": [
+      "info:Info",
+      "results:Episode"
+    ]
   }
 }

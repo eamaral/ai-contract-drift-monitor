@@ -188,33 +188,39 @@ npm run drift
 
 ---
 
-## 🔄 Automatic Snapshot Commits (CI/CD Only)
+## 🔄 Automatic Pull Requests (CI/CD Only)
 
 **When running in GitHub Actions**, detected changes trigger an automatic workflow:
 
 ### What Happens:
 1. **Drift detected** → API schema changed
 2. **Snapshot updated** → New structure saved to `snapshots/latest.json`
-3. **Auto-commit** → GitHub Actions commits the change:
-   ```
-   chore: update API snapshots [skip ci]
-   ```
-4. **Push to main** → Changes pushed automatically
-5. **No PR needed** → Direct commit to main branch
+3. **Branch created** → `drift/snapshot-update-{run_id}`
+4. **Pull Request opened** → Automatic PR with AI analysis
+5. **You review** → Check diff and AI summary
+6. **Approve/Reject** → Merge or close the PR
 
-### Why Direct Commit?
-- ✅ Snapshots are **non-breaking changes** (just documentation)
-- ✅ You already received **alerts** (Teams/Email) about the change
-- ✅ You can **review the commit** in GitHub history
-- ✅ If needed, you can **revert** the commit
+### PR Contains:
+- ✅ **Updated snapshots** with new API structure
+- ✅ **AI-powered summary** of changes
+- ✅ **Link to workflow run** for detailed logs
+- ✅ **Labels** for easy filtering (`drift-detection`, `automated-pr`)
 
 ### Review Process:
-1. **Alert received** → Check Teams/Email notification
-2. **AI Summary** → Understand the impact
-3. **GitHub commit** → Review snapshot diff in repository
-4. **Action** → If problematic, revert or contact API owner
+1. **Alert received** → Email/Teams notification with AI summary
+2. **PR opened** → GitHub creates automatic Pull Request
+3. **Review diff** → See exactly what changed in `snapshots/latest.json`
+4. **Check AI analysis** → Understand business impact
+5. **Decision:**
+   - ✅ **Approve & Merge** → Accept changes
+   - ❌ **Close PR** → Reject and investigate with API owner
 
-**Note:** The `[skip ci]` flag prevents infinite loops by not triggering another pipeline run.
+### Why Pull Request (Not Direct Commit)?
+- ✅ **Explicit approval** required for snapshot changes
+- ✅ **Code review** process enforced
+- ✅ **Discussion** possible in PR comments
+- ✅ **Revert easily** if needed (just close PR)
+- ✅ **Audit trail** of when and why snapshots changed
 
 ---
 

@@ -89,16 +89,45 @@ jobs:
           echo "has_changes=true" >> $GITHUB_OUTPUT
         fi
         
-    - name: Commit snapshot changes
+    - name: Create Pull Request for snapshot changes
       if: steps.changes.outputs.has_changes == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add snapshots/latest.json
-        git commit -m "chore: update API snapshots [skip ci]" || exit 0
-        git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update API snapshots"
+        branch: "drift/snapshot-update-${{ github.run_id }}"
+        delete-branch: true
+        title: "🚨 API Drift Detected - Snapshot Update Required"
+        body: |
+          ## 🚨 API Drift Detected
+          
+          **Detected by:** Automated drift check
+          **Run ID:** ${{ github.run_id }}
+          **Timestamp:** ${{ github.event.head_commit.timestamp }}
+          
+          ### 📊 Changes Summary
+          
+          APIs with changes detected. Please review the snapshot diff below.
+          
+          ### 🤖 AI Analysis
+          
+          See the workflow logs for detailed AI-powered impact analysis.
+          
+          ### ✅ What to Do
+          
+          1. **Review the diff** in `snapshots/latest.json`
+          2. **Check the AI summary** in workflow logs
+          3. **Approve** if changes are acceptable
+          4. **Reject** if changes indicate API breaking changes
+          
+          ### 🔗 Useful Links
+          
+          - [Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          - [View Snapshots](https://github.com/${{ github.repository }}/tree/main/snapshots)
+        labels: |
+          drift-detection
+          automated-pr
+          api-monitoring
         
     - name: Upload snapshots
       uses: actions/upload-artifact@v4

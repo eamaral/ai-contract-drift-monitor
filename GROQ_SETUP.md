@@ -74,7 +74,7 @@ migration paths to avoid service disruption.
 
 | Model | Speed | Quality | Best For |
 |-------|-------|---------|----------|
-| `llama-3.1-70b-versatile` | ⚡⚡⚡ | ⭐⭐⭐⭐⭐ | **Analysis (recommended)** |
+| `llama-3.3-70b-versatile` | ⚡⚡⚡ | ⭐⭐⭐⭐⭐ | **Analysis (recommended)** |
 | `llama-3.1-8b-instant` | ⚡⚡⚡⚡⚡ | ⭐⭐⭐ | Quick responses |
 | `mixtral-8x7b-32768` | ⚡⚡ | ⭐⭐⭐⭐ | Long context |
 

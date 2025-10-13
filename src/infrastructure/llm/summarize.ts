@@ -12,7 +12,7 @@ export async function summarizeDiff(
 
   // Groq API format (OpenAI compatible)
   const body = {
-    model: 'llama-3.1-70b-versatile', // Groq's best free model
+    model: 'llama-3.3-70b-versatile', // Groq's latest free model
     messages: [
       {
         role: 'system',

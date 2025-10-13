@@ -2,7 +2,7 @@
   {
     "id": "fx_usd_eur",
     "method": "GET",
-    "url": "https://api.frankfurter.app/latest?from=USD&to=EUR"
+    "url": "https://api.frankfurter.app/currencies"
   },
   {
     "id": "github_repo_ts",

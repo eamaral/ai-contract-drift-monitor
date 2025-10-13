@@ -56,12 +56,51 @@ function buildLevel1Schema(obj: unknown): Level1Schema {
 }
 
 function diffSchemas(prev: Level1Schema, curr: Level1Schema): { added: string[]; removed: string[] } {
-  const prevKeys = new Set(Object.keys(prev || {}));
-  const currKeys = new Set(Object.keys(curr || {}));
   const added: string[] = [];
   const removed: string[] = [];
-  for (const k of currKeys) if (!prevKeys.has(k)) added.push(k);
-  for (const k of prevKeys) if (!currKeys.has(k)) removed.push(k);
+  
+  // Get all keys from both schemas
+  const allKeys = new Set([...Object.keys(prev || {}), ...Object.keys(curr || {})]);
+  
+  for (const key of allKeys) {
+    const prevValue = prev?.[key];
+    const currValue = curr?.[key];
+    
+    // Key was removed
+    if (prevValue !== undefined && currValue === undefined) {
+      removed.push(key);
+      continue;
+    }
+    
+    // Key was added
+    if (prevValue === undefined && currValue !== undefined) {
+      added.push(key);
+      continue;
+    }
+    
+    // Both exist - check if values are arrays (GraphQL types)
+    if (Array.isArray(prevValue) && Array.isArray(currValue)) {
+      const prevSet = new Set(prevValue);
+      const currSet = new Set(currValue);
+      
+      for (const item of currValue) {
+        if (!prevSet.has(item)) {
+          added.push(`${key}.${item}`);
+        }
+      }
+      
+      for (const item of prevValue) {
+        if (!currSet.has(item)) {
+          removed.push(`${key}.${item}`);
+        }
+      }
+    }
+    // If values changed type (string comparison)
+    else if (prevValue !== currValue) {
+      added.push(`${key} (type changed)`);
+    }
+  }
+  
   return { added, removed };
 }
 
@@ -139,12 +178,9 @@ async function main(): Promise<void> {
     }
   }
 
-  ensureDir(SNAPSHOT_DIR);
-  fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(current, null, 2));
-  console.log(`[drift] snapshot written: ${SNAPSHOT_FILE}`);
-
   const changedTargets = Object.keys(perTargetDiff);
   const totalTargets = Object.keys(current).length;
+  const hasChanges = changedTargets.length > 0;
   
   let title: string;
   let text: string;
@@ -180,6 +216,16 @@ async function main(): Promise<void> {
       { name: 'Affected APIs', value: changedTargets.join(', ') },
       { name: 'Status', value: '⚠️ Changes Detected' }
     ];
+  }
+
+  // Update snapshot only if changes detected or if it doesn't exist
+  const snapshotExists = fs.existsSync(SNAPSHOT_FILE);
+  if (hasChanges || !snapshotExists) {
+    ensureDir(SNAPSHOT_DIR);
+    fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(current, null, 2));
+    console.log(`[drift] snapshot ${snapshotExists ? 'updated' : 'created'}: ${SNAPSHOT_FILE}`);
+  } else {
+    console.log('[drift] snapshot unchanged (no drift detected)');
   }
 
   // Always show in console

@@ -1,20 +1,5 @@
 import { test, expect, request as pwRequest } from '@playwright/test';
-import { z } from 'zod';
-
-const CharacterSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  status: z.string(),
-  species: z.string()
-});
-
-const RickMortyResponseSchema = z.object({
-  data: z.object({
-    characters: z.object({
-      results: z.array(CharacterSchema)
-    })
-  })
-});
+import { RickMortyResponseSchema } from '../schemas/rick-morty.schema.js';
 
 test('Rick and Morty GraphQL characters contract', async () => {
   const req = await pwRequest.newContext();

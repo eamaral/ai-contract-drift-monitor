@@ -33,6 +33,9 @@ src/
 │   └── use-cases/        # Business use cases
 └── infrastructure/        # External concerns
     ├── api/
+    │   ├── config/       # API targets configuration
+    │   ├── graphql/      # GraphQL introspection utilities
+    │   ├── schemas/      # Zod schema definitions
     │   └── tests/        # Contract tests
     ├── llm/              # AI integration
     ├── monitoring/       # Metrics & monitoring
@@ -102,7 +105,7 @@ EMAIL_TO=recipient@example.com
 
 ### Step 1: Define the API Target
 
-Add to `src/infrastructure/api/tests/targets.json`:
+Add to `src/infrastructure/api/config/targets.json`:
 
 ```json
 {
@@ -115,28 +118,38 @@ Add to `src/infrastructure/api/tests/targets.json`:
 }
 ```
 
-### Step 2: Create Contract Test
+### Step 2: Create Schema
+
+Create `src/infrastructure/api/schemas/my-api.schema.ts`:
+
+```typescript
+import { z } from 'zod';
+
+export const MyApiSchema = z.object({
+  field: z.string()
+});
+
+export type MyApiResponse = z.infer<typeof MyApiSchema>;
+```
+
+### Step 3: Create Contract Test
 
 Create `src/infrastructure/api/tests/my-api-contract.spec.ts`:
 
 ```typescript
 import { test, expect, request as pwRequest } from '@playwright/test';
-import { z } from 'zod';
-
-const MySchema = z.object({
-  field: z.string()
-});
+import { MyApiSchema } from '../schemas/my-api.schema.js';
 
 test('My API contract', async () => {
   const req = await pwRequest.newContext();
   const res = await req.get('https://api.example.com/data');
   expect(res.status()).toBe(200);
   const json = await res.json();
-  expect(MySchema.safeParse(json).success).toBe(true);
+  expect(MyApiSchema.safeParse(json).success).toBe(true);
 });
 ```
 
-### Step 3: Run Drift Check (The Magic! ✨)
+### Step 4: Run Drift Check (The Magic! ✨)
 
 ```bash
 npm run drift

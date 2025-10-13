@@ -11,7 +11,7 @@ import {
   INTROSPECTION_QUERY, 
   extractGraphQLSchema,
   type GraphQLIntrospectionResult
-} from '../../infrastructure/api/graphql-introspection.js';
+} from '../../infrastructure/api/graphql/introspection.js';
 
 type Target = {
   id: string;
@@ -29,7 +29,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ROOT = path.resolve(__dirname, '../../..');
-const TARGETS_PATH = path.resolve(ROOT, 'src/infrastructure/api/tests', 'targets.json');
+const TARGETS_PATH = path.resolve(ROOT, 'src/infrastructure/api/config', 'targets.json');
 const SNAPSHOT_DIR = path.resolve(ROOT, 'snapshots');
 const SNAPSHOT_FILE = path.resolve(SNAPSHOT_DIR, 'latest.json');
 

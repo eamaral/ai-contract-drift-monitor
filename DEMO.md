@@ -35,7 +35,7 @@ npm run drift
 
 ### **Passo 2: Explicar as APIs (30s)**
 
-Mostrar o arquivo `src/infrastructure/api/tests/targets.json`:
+Mostrar o arquivo `src/infrastructure/api/config/targets.json`:
 
 **Fale:** "Aqui definimos as APIs que queremos monitorar:
 - GitHub API (REST)
@@ -187,13 +187,13 @@ R: Localmente não. Na pipeline CI/CD, sim (auto-commit).
 npm run drift  # ✅ All Good
 
 # 2. Simular mudança
-# Editar targets.json (mudar EUR para EUR,GBP,JPY)
+# Editar config/targets.json (mudar EUR para EUR,GBP,JPY)
 
 # 3. Detectar + IA
 npm run drift  # 🚨 Drift + AI Analysis
 
 # 4. Limpar
-git checkout src/infrastructure/api/tests/targets.json snapshots/latest.json
+git checkout src/infrastructure/api/config/targets.json snapshots/latest.json
 ```
 
 **Pronto para apresentar!** 🎯

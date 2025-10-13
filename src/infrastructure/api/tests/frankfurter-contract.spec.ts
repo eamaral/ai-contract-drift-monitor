@@ -1,12 +1,5 @@
 import { test, expect, request as pwRequest } from '@playwright/test';
-import { z } from 'zod';
-
-const FrankfurterSchema = z.object({
-  amount: z.number().optional(),
-  base: z.string(),
-  date: z.string(),
-  rates: z.record(z.number())
-});
+import { FrankfurterSchema } from '../schemas/frankfurter.schema.js';
 
 test('Frankfurter latest USD->EUR contract', async () => {
   const req = await pwRequest.newContext();

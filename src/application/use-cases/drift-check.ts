@@ -182,29 +182,28 @@ async function main(): Promise<void> {
     ];
   }
 
-  // Send notification (Teams first, then console/email)
+  // Always show in console
+  await sendConsoleMessage(title, text, facts);
+  
+  // Send to Teams if configured
   const webhookUrl = process.env.TEAMS_WEBHOOK_URL || '';
   if (webhookUrl) {
     try {
       await sendTeamsMessage(webhookUrl, title, text, facts);
       console.log('[drift] ✅ Teams message sent');
     } catch (error) {
-      console.log('[drift] ❌ Teams failed, falling back to console');
-      await sendConsoleMessage(title, text, facts);
+      console.log('[drift] ❌ Teams failed:', error);
     }
-  } else {
-    // Fallback to console notification
-    await sendConsoleMessage(title, text, facts);
-    
-    // Try email if configured
-    const emailTo = process.env.EMAIL_TO || '';
-    if (emailTo) {
-      try {
-        await sendEmailMessage(emailTo, title, text, facts);
-        console.log('[drift] ✅ Email sent to', emailTo);
-      } catch (error) {
-        console.log('[drift] ❌ Email failed:', error);
-      }
+  }
+  
+  // Always send email if configured
+  const emailTo = process.env.EMAIL_TO || '';
+  if (emailTo) {
+    try {
+      await sendEmailMessage(emailTo, title, text, facts);
+      console.log('[drift] ✅ Email sent to', emailTo);
+    } catch (error) {
+      console.log('[drift] ❌ Email failed:', error);
     }
   }
 }

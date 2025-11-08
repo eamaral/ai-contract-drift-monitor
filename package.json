@@ -9,7 +9,9 @@
   },
   "scripts": {
     "test:contracts": "playwright test --reporter=list,junit --output=./test-results --project=chromium",
-    "drift": "tsx src/application/use-cases/drift-check.ts",
+    "drift": "tsx src/cli/drift.ts",
+    "drift:legacy": "tsx src/application/use-cases/drift-check.ts",
+    "test:guardrails": "npx tsx --test src/application/diff/__tests-guardrails__/severity.spec.ts",
     "metrics": "METRICS_PORT=9091 tsx src/infrastructure/monitoring/metrics/server.ts",
     "start": "docker-compose up -d && echo '✅ Services started! Access Grafana at http://localhost:3001 (admin/admin)'"
   },
@@ -25,10 +27,8 @@
   "license": "MIT",
   "dependencies": {
     "@playwright/test": "^1.47.2",
-    "@types/nodemailer": "^7.0.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "nodemailer": "^7.0.9",
     "prom-client": "^15.1.3",
     "tsx": "^4.20.6",
     "zod": "^3.23.8"

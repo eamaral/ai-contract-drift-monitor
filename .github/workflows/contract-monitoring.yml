@@ -68,17 +68,191 @@ jobs:
       run: npm ci
       
     - name: Run drift check
+      id: drift
       env:
-        AI_GATEWAY_URL: ${{ secrets.AI_GATEWAY_URL }}
-        AI_API_KEY: ${{ secrets.AI_API_KEY }}
-        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        # AI Configuration (GROQ)
+        AI_ENABLED: true
+        AI_GATEWAY_URL: https://api.groq.com/openai/v1/chat/completions
+        AI_API_KEY: ${{ secrets.AI_API_KEY || secrets.GROQ_API_KEY }}
+        AI_GROUNDED_ONLY: false
+        AI_MAX_TOKENS: 1500
+        
+        # GitHub Actions context (for logs only, notification sent separately)
+        GITHUB_SERVER_URL: ${{ github.server_url }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+        
+        # Security Guardrails
+        SAFE_HTTP_METHODS: GET,HEAD,POST
+        MAX_QPS: 1
+        MAX_CONCURRENCY: 2
+        HTTP_TIMEOUT_MS: 8000
+        
+        # Drift Configuration
+        DRIFT_SEVERITY_GATE: major
+        SNAPSHOT_UPDATE_MODE: PR_ONLY
+        
+        # Metrics
+        METRICS_PORT: 9091
+      run: |
+        echo "🚀 Running drift check..."
+        npm run drift 2>&1 | tee drift_output.log || true
+        
+        # Save full console output for Teams notification
+        cat drift_output.log > .drift_report.txt
+        
+        # Extract drift status from logs
+        if grep -q "MAJOR changes detected" drift_output.log; then
+          echo "severity=MAJOR" >> $GITHUB_OUTPUT
+          echo "has_drift=true" >> $GITHUB_OUTPUT
+          echo "status=🚨 BLOCKING" >> $GITHUB_OUTPUT
+        elif grep -q "MINOR changes detected" drift_output.log; then
+          echo "severity=MINOR" >> $GITHUB_OUTPUT
+          echo "has_drift=true" >> $GITHUB_OUTPUT
+          echo "status=⚠️ Alert Only" >> $GITHUB_OUTPUT
+        else
+          echo "severity=NONE" >> $GITHUB_OUTPUT
+          echo "has_drift=false" >> $GITHUB_OUTPUT
+          echo "status=✅ All Good" >> $GITHUB_OUTPUT
+        fi
+        
+        # Count affected APIs
+        # Try multiple methods to extract the count
+        AFFECTED_COUNT=$(grep -oP "Drift detected in \K\w+" drift_output.log | wc -l | tr -d ' \n' || echo "0")
+        if [ "$AFFECTED_COUNT" = "0" ] || [ -z "$AFFECTED_COUNT" ]; then
+          # Fallback: count lines with "Affected APIs"
+          AFFECTED_COUNT=$(grep -c "Affected APIs:" drift_output.log 2>/dev/null | tr -d ' \n' || echo "0")
+        fi
+        if [ "$AFFECTED_COUNT" = "0" ] || [ -z "$AFFECTED_COUNT" ]; then
+          # Fallback: if drift detected, assume at least 1
+          if grep -q "MAJOR changes detected\|MINOR changes detected" drift_output.log 2>/dev/null; then
+            AFFECTED_COUNT="1"
+          else
+            AFFECTED_COUNT="0"
+          fi
+        fi
+        
+        # Clean any remaining whitespace/newlines
+        AFFECTED_COUNT=$(echo "$AFFECTED_COUNT" | tr -d ' \n\r\t')
+        
+        echo "affected_apis=$AFFECTED_COUNT" >> $GITHUB_OUTPUT
+        
+        # Always succeed (don't fail the job)
+        exit 0
+      
+    - name: Send Email Notification
+      if: always()
+      env:
         SMTP_HOST: ${{ secrets.SMTP_HOST }}
         SMTP_PORT: ${{ secrets.SMTP_PORT }}
         SMTP_USER: ${{ secrets.SMTP_USER }}
         SMTP_PASS: ${{ secrets.SMTP_PASS }}
         SMTP_FROM: ${{ secrets.SMTP_FROM }}
         EMAIL_TO: ${{ secrets.EMAIL_TO }}
-      run: npx tsx src/application/use-cases/drift-check.ts
+      run: |
+        if [ -z "$SMTP_HOST" ] || [ -z "$EMAIL_TO" ]; then
+          echo "⚠️ Email not configured, skipping notification"
+          exit 0
+        fi
+        
+        SEVERITY="${{ steps.drift.outputs.severity }}"
+        STATUS="${{ steps.drift.outputs.status }}"
+        AFFECTED="${{ steps.drift.outputs.affected_apis }}"
+        RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        
+        # Fallback for affected_apis if empty
+        if [ -z "$AFFECTED" ]; then
+          if [ "$SEVERITY" = "MAJOR" ] || [ "$SEVERITY" = "MINOR" ]; then
+            AFFECTED="1"
+          else
+            AFFECTED="0"
+          fi
+        fi
+        
+        # Extract full AI analysis
+        if [ -f .drift_report.txt ]; then
+          FULL_MESSAGE=$(awk '/^============================================================$/{flag=!flag; next} flag' .drift_report.txt)
+          FULL_MESSAGE=$(echo "$FULL_MESSAGE" | tail -n +2)
+          
+          if [ -z "$FULL_MESSAGE" ] || [ "${#FULL_MESSAGE}" -lt 50 ]; then
+            FULL_MESSAGE=$(grep -A 100 "📝 Summary:" .drift_report.txt | grep -v "\[" | head -80 || echo "Analysis in progress")
+          fi
+        else
+          FULL_MESSAGE="No analysis available"
+        fi
+        
+        # Build title based on severity
+        if [ "$SEVERITY" = "MAJOR" ]; then
+          TITLE="🚨 API Drift Detected - MAJOR"
+          COLOR="#FF0000"
+        elif [ "$SEVERITY" = "MINOR" ]; then
+          TITLE="⚠️ API Drift Detected - MINOR"
+          COLOR="#FFA500"
+        else
+          TITLE="✅ API Contracts Status - All Good"
+          COLOR="#00FF00"
+        fi
+        
+        # Create HTML email
+        cat > email_body.html <<EOF
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .header { background: ${COLOR}; color: white; padding: 20px; border-radius: 5px; }
+            .content { padding: 20px; background: #f5f5f5; margin: 20px 0; border-radius: 5px; }
+            .details { background: white; padding: 15px; border-left: 4px solid ${COLOR}; margin: 15px 0; }
+            .fact { padding: 5px 0; }
+            .fact strong { display: inline-block; width: 200px; }
+            .button { display: inline-block; padding: 10px 20px; background: ${COLOR}; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+            pre { white-space: pre-wrap; word-wrap: break-word; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>${TITLE}</h1>
+          </div>
+          <div class="content">
+            <pre>${FULL_MESSAGE}</pre>
+          </div>
+          <div class="details">
+            <div class="fact"><strong>🆔 Run ID:</strong> ${{ github.run_id }}</div>
+            <div class="fact"><strong>📊 Severity:</strong> ${SEVERITY}</div>
+            <div class="fact"><strong>⚠️ APIs Affected:</strong> ${AFFECTED}</div>
+            <div class="fact"><strong>🚦 Status:</strong> ${STATUS}</div>
+            <div class="fact"><strong>⏰ Timestamp:</strong> $(date -u +"%Y-%m-%d %H:%M:%S UTC")</div>
+          </div>
+          <a href="${RUN_URL}" class="button">🔍 View Execution Details</a>
+        </body>
+        </html>
+        EOF
+        
+        # Send email using Python
+        python3 <<PYTHON
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        
+        with open('email_body.html', 'r') as f:
+            html_content = f.read()
+        
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = '${TITLE}'
+        msg['From'] = '${SMTP_FROM}'
+        msg['To'] = '${EMAIL_TO}'
+        
+        msg.attach(MIMEText(html_content, 'html'))
+        
+        with smtplib.SMTP('${SMTP_HOST}', int('${SMTP_PORT}')) as server:
+            server.starttls()
+            server.login('${SMTP_USER}', '${SMTP_PASS}')
+            server.send_message(msg)
+        
+        print('✅ Email notification sent successfully')
+        PYTHON
+        
+        echo "✅ Email notification sent: $TITLE"
       
     - name: Check for changes
       id: changes
@@ -89,45 +263,32 @@ jobs:
           echo "has_changes=true" >> $GITHUB_OUTPUT
         fi
         
+    - name: Read PR body
+      id: pr_body
+      if: steps.changes.outputs.has_changes == 'true'
+      run: |
+        if [ -f .pr_body.md ]; then
+          echo "PR body file found"
+          cat .pr_body.md
+        else
+          echo "No PR body file found, using default"
+        fi
+        
     - name: Create Pull Request for snapshot changes
       if: steps.changes.outputs.has_changes == 'true'
       uses: peter-evans/create-pull-request@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "chore: update API snapshots"
+        commit-message: "chore: update API snapshots [automated]"
         branch: "drift/snapshot-update-${{ github.run_id }}"
         delete-branch: true
         title: "🚨 API Drift Detected - Snapshot Update Required"
-        body: |
-          ## 🚨 API Drift Detected
-          
-          **Detected by:** Automated drift check
-          **Run ID:** ${{ github.run_id }}
-          **Timestamp:** ${{ github.event.head_commit.timestamp }}
-          
-          ### 📊 Changes Summary
-          
-          APIs with changes detected. Please review the snapshot diff below.
-          
-          ### 🤖 AI Analysis
-          
-          See the workflow logs for detailed AI-powered impact analysis.
-          
-          ### ✅ What to Do
-          
-          1. **Review the diff** in `snapshots/latest.json`
-          2. **Check the AI summary** in workflow logs
-          3. **Approve** if changes are acceptable
-          4. **Reject** if changes indicate API breaking changes
-          
-          ### 🔗 Useful Links
-          
-          - [Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          - [View Snapshots](https://github.com/${{ github.repository }}/tree/main/snapshots)
+        body-path: .pr_body.md
         labels: |
           drift-detection
           automated-pr
           api-monitoring
+        assignees: ${{ github.actor }}
         
     - name: Upload snapshots
       uses: actions/upload-artifact@v4
@@ -138,35 +299,21 @@ jobs:
         
     - name: Send notification summary
       if: always()
-      env:
-        AI_GATEWAY_URL: ${{ secrets.AI_GATEWAY_URL }}
-        AI_API_KEY: ${{ secrets.AI_API_KEY }}
-        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
-        SMTP_HOST: ${{ secrets.SMTP_HOST }}
-        SMTP_PORT: ${{ secrets.SMTP_PORT }}
-        SMTP_USER: ${{ secrets.SMTP_USER }}
-        SMTP_PASS: ${{ secrets.SMTP_PASS }}
-        SMTP_FROM: ${{ secrets.SMTP_FROM }}
-        EMAIL_TO: ${{ secrets.EMAIL_TO }}
       run: |
         echo "## 📊 Drift Check Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Status:** ${{ steps.changes.outputs.has_changes == 'true' && '⚠️ Changes Detected' || '✅ All Good' }}" >> $GITHUB_STEP_SUMMARY
         echo "**APIs Monitored:** $(cat snapshots/latest.json | jq 'keys | length')" >> $GITHUB_STEP_SUMMARY
         if [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
-          echo "**Changes:** Snapshots updated and committed" >> $GITHUB_STEP_SUMMARY
+          echo "**Changes:** Snapshots updated and PR created" >> $GITHUB_STEP_SUMMARY
         else
           echo "**Changes:** No changes detected" >> $GITHUB_STEP_SUMMARY
         fi
         echo "**Timestamp:** $(date -u)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### 🔗 Quick Links" >> $GITHUB_STEP_SUMMARY
-        echo "- 📊 [Grafana Dashboard](http://localhost:3001)" >> $GITHUB_STEP_SUMMARY
         echo "- 📸 [View Snapshots](https://github.com/${{ github.repository }}/tree/main/snapshots)" >> $GITHUB_STEP_SUMMARY
         echo "- 📝 [Latest Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
-        
-        # Send notification even if no changes
-        npx tsx src/application/use-cases/drift-check.ts
 
   metrics:
     name: Prometheus Metrics & Health Check

@@ -6,17 +6,11 @@ export async function sendConsoleMessage(
   facts?: Fact[]
 ): Promise<void> {
   console.log('\n' + '='.repeat(60));
-  console.log(`🚨 ${title}`);
-  console.log('='.repeat(60));
-  console.log(`📝 ${text}`);
+  console.log(title); // Remove emoji duplicate - already in title
+  console.log(text);  // Remove emoji duplicate - already in text
   
-  if (facts && facts.length > 0) {
-  console.log('\n📊 Details:');
-  facts.forEach(fact => {
-    console.log(`   • ${fact.name}: ${fact.value}`);
-  });
-  }
+  // Facts are NOT printed here - they're for Teams/external notifications only
+  // Console output should be clean and focused on the AI analysis
   
-  console.log('\n⏰ Timestamp:', new Date().toISOString());
   console.log('='.repeat(60) + '\n');
 }

@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import { summarizeDiff } from '../../infrastructure/llm/summarize.js';
 import { sendTeamsMessage } from '../../infrastructure/notifications/reporting/teams.js';
 import { sendConsoleMessage } from '../../infrastructure/notifications/reporting/console.js';
-import { sendEmailMessage } from '../../infrastructure/notifications/reporting/email.js';
 import { 
   isGraphQLTarget, 
   INTROSPECTION_QUERY, 
@@ -232,24 +231,13 @@ async function main(): Promise<void> {
   await sendConsoleMessage(title, text, facts);
   
   // Send to Teams if configured
-  const webhookUrl = process.env.TEAMS_WEBHOOK_URL || '';
+  const webhookUrl = process.env.TEAMS_WEBHOOK || '';
   if (webhookUrl) {
     try {
       await sendTeamsMessage(webhookUrl, title, text, facts);
       console.log('[drift] ✅ Teams message sent');
     } catch (error) {
       console.log('[drift] ❌ Teams failed:', error);
-    }
-  }
-  
-  // Always send email if configured
-  const emailTo = process.env.EMAIL_TO || '';
-  if (emailTo) {
-    try {
-      await sendEmailMessage(emailTo, title, text, facts);
-      console.log('[drift] ✅ Email sent to', emailTo);
-    } catch (error) {
-      console.log('[drift] ❌ Email failed:', error);
     }
   }
 }

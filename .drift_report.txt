@@ -1,0 +1,68 @@
+
+> ai-contract-drift-monitor@0.1.0 drift
+> tsx src/cli/drift.ts
+
+[metrics] Drift monitor metrics registered
+[2025-11-07T20:17:42.174Z] [df97dce3] [INFO] [drift-check] 🚀 Starting drift check - Run ID: df97dce3
+[2025-11-07T20:17:42.174Z] [df97dce3] [INFO] [drift-check] Checking scheduling window...
+[2025-11-07T20:17:42.174Z] [df97dce3] [INFO] [schedule] Schedule check passed - monitoring allowed
+[2025-11-07T20:17:42.174Z] [df97dce3] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-boilerplate/ai-contract-drift-boilerplate/src/infrastructure/api/config/targets.json
+[2025-11-07T20:17:42.174Z] [df97dce3] [INFO] [drift-check] Loaded 3 target(s)
+[2025-11-07T20:17:42.175Z] [df97dce3] [INFO] [drift-check] Previous snapshot: 3 target(s)
+[2025-11-07T20:17:42.175Z] [df97dce3] [INFO] [drift-check] Fetching fx_usd_eur...
+[guardedFetch] GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY (target: fx_usd_eur)
+[guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
+[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (218ms)
+[2025-11-07T20:17:42.408Z] [df97dce3] [INFO] [drift-check] ✅ No changes in fx_usd_eur
+[2025-11-07T20:17:42.408Z] [df97dce3] [INFO] [drift-check] Fetching github_repo_ts...
+[guardedFetch] GET https://api.github.com/repos/microsoft/TypeScript (target: github_repo_ts)
+[guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
+[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (326ms)
+[2025-11-07T20:17:43.503Z] [df97dce3] [INFO] [drift-check] ✅ No changes in github_repo_ts
+[2025-11-07T20:17:43.503Z] [df97dce3] [INFO] [drift-check] Fetching rick_morty_graphql...
+[2025-11-07T20:17:43.503Z] [df97dce3] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
+[guardedFetch] POST https://rickandmortyapi.com/graphql (target: rick_morty_graphql)
+[guardedFetch] Headers: {"Content-Type":"application/json","User-Agent":"ai-drift-monitor/0.1.0"}
+[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (160ms)
+[2025-11-07T20:17:44.338Z] [df97dce3] [WARN] [drift-check] Drift detected in rick_morty_graphql: +0 -1
+[2025-11-07T20:17:44.338Z] [df97dce3] [INFO] [drift-check] Classifying severity...
+[2025-11-07T20:17:44.338Z] [df97dce3] [WARN] [drift-check] 🚨 MAJOR BREAKING CHANGES
+
+  • [MAJOR] rick_morty_graphql: Field 'Character.isAlive:Boolean' removed (breaking change)
+
+[2025-11-07T20:17:44.338Z] [df97dce3] [INFO] [drift-check] Generating AI summary...
+[2025-11-07T20:17:44.338Z] [df97dce3] [INFO] [ai-summary] AI enabled - generating intelligent summary
+[2025-11-07T20:17:44.339Z] [df97dce3] [INFO] [ai-summary] Ground truth tokens extracted: 5 unique tokens
+[2025-11-07T20:17:44.339Z] [df97dce3] [INFO] [ai-summary] Sending request to AI gateway
+[2025-11-07T20:17:45.854Z] [df97dce3] [INFO] [ai-summary] AI summary generated and validated successfully
+[2025-11-07T20:17:45.854Z] [df97dce3] [INFO] [drift-check] Updating snapshot (PR-only mode)...
+[2025-11-07T20:17:45.854Z] [df97dce3] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-boilerplate/ai-contract-drift-boilerplate/snapshots/latest.json (mode: PR_ONLY)
+[2025-11-07T20:17:45.855Z] [df97dce3] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-boilerplate/ai-contract-drift-boilerplate/snapshots/latest.json
+[2025-11-07T20:17:45.855Z] [df97dce3] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-boilerplate/ai-contract-drift-boilerplate/.pr_body.md
+[2025-11-07T20:17:45.856Z] [df97dce3] [ERROR] [drift-check] 🚨 BLOCKING: MAJOR changes detected - CI will fail | {}
+
+============================================================
+🚨 API Drift Detected - MAJOR
+
+📝 Summary:
+The removal of the Character.isAlive field of type Boolean from the rick_morty_graphql schema may cause breaking changes for clients relying on this field, potentially affecting character filtering or sorting functionality, and impacting the overall user experience.
+
+💥 Impact:
+
+1. API consumers will no longer be able to query the isAlive status of characters, forcing them to adapt their queries and potentially leading to increased latency or errors if not handled properly
+
+2. Existing character filtering or sorting logic based on the isAlive field will be broken, requiring updates to maintain functionality
+
+3. Clients may need to implement workarounds, such as using alternative fields or making additional requests, to achieve the same functionality as before
+
+⚠️ Risks:
+
+1. Breaking changes may lead to a negative user experience due to errors or missing functionality, potentially resulting in a loss of users or revenue
+
+2. Incompatible API changes can cause security vulnerabilities if not properly handled, such as exposing sensitive data or allowing unauthorized access
+
+3. The removal of the isAlive field may indicate a larger shift in the API's data model, requiring clients to reassess their integration and potential investments in the API
+============================================================
+
+[2025-11-07T20:17:45.856Z] [df97dce3] [INFO] [drift-check] Teams webhook not configured, skipping
+[2025-11-07T20:17:45.856Z] [df97dce3] [INFO] [drift-check] ✅ Drift check completed in 3682ms - Exit code: 1

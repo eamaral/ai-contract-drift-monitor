@@ -1,0 +1,40 @@
+# Code Owners - Template
+# 
+# Define who needs to review PRs for specific parts of the codebase.
+# For automated drift detection PRs, at least one owner must approve.
+#
+# 📝 SETUP INSTRUCTIONS:
+# 1. Replace placeholder team names with your actual GitHub teams or usernames
+# 2. Format: @org/team-name or @username
+# 3. Uncomment the lines you want to use
+# 4. Delete this comment block when configured
+
+# Example configurations (uncomment and customize):
+
+# API Configuration & Targets
+# /src/infrastructure/api/config/targets.json @your-api-team @your-platform-team
+
+# Snapshots (Critical - breaking changes require review)
+# /snapshots/ @your-api-team @your-platform-team @your-engineering-lead
+
+# Security & Infrastructure
+# /src/infrastructure/http/ @your-security-team
+# /src/infrastructure/monitoring/ @your-platform-team
+# /src/infrastructure/logging/ @your-security-team
+
+# Workflows
+# /.github/workflows/ @your-devops-team
+
+# Root Configuration
+# /.env* @your-security-team
+# /package.json @your-platform-team
+
+# Default: require review from platform team
+# * @your-platform-team
+
+# 💡 TIP: Start simple with just one default reviewer:
+# * @your-username
+
+# 🔒 For production: uncomment and configure at least snapshots/ review
+# /snapshots/ @your-team
+

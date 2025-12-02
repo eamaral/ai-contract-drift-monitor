@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .header { background: #FF0000; color: white; padding: 20px; border-radius: 5px; }
+    .content { padding: 20px; background: #f5f5f5; margin: 20px 0; border-radius: 5px; }
+    .details { background: white; padding: 15px; border-left: 4px solid #FF0000; margin: 15px 0; }
+    .fact { padding: 5px 0; }
+    .fact strong { display: inline-block; width: 200px; }
+    .button { display: inline-block; padding: 10px 20px; background: #FF0000; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+    pre { white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚨 API Drift Detected - MAJOR</h1>
+  </div>
+  <div class="content">
+    <pre>
+📝 Summary:
+The API schema has undergone changes, with additions and removals of fields in the github_repo_ts and rick_morty_graphql endpoints, potentially impacting compatibility and data handling for clients. The removal of Character.new_field_teste in rick_morty_graphql is a breaking change, while additions in github_repo_ts may require updates to client handling of description and language fields. These changes have implications for data processing, security, and client compatibility.
+
+💥 Impact:
+
+1. API consumers of github_repo_ts endpoint must update to handle new description and language fields, potentially requiring changes to data parsing and storage logic.
+
+2. Removal of campo_fake_para_demo and outro_campo_inexistente in github_repo_ts may cause issues for clients relying on these fields, despite them being marked as non-existent or for demo purposes.
+
+3. The removal of Character.new_field_teste:string in rick_morty_graphql is a breaking change, requiring clients to update their GraphQL queries to avoid errors.
+
+4. Clients may need to adapt error handling for cases where removed fields are still referenced in queries or payloads, ensuring robustness against potential errors.
+
+⚠️ Risks:
+
+1. Breaking changes in rick_morty_graphql may lead to client errors or failures if not properly updated, potentially impacting user experience and business operations.
+
+2. Incompatible changes could expose security vulnerabilities if not properly handled, such as incorrect data validation or unauthorized access due to outdated client logic.
+
+3. The introduction of new fields like description and language in github_repo_ts may introduce additional attack surfaces if not properly validated and sanitized, posing security risks.
+
+4. Business logic relying on the removed fields may be disrupted, requiring updates to ensure continuity of operations and data integrity.</pre>
+  </div>
+  <div class="details">
+    <div class="fact"><strong>🆔 Run ID:</strong> 19868510933</div>
+    <div class="fact"><strong>📊 Severity:</strong> MAJOR</div>
+    <div class="fact"><strong>⚠️ APIs Affected:</strong> 2</div>
+    <div class="fact"><strong>🚦 Status:</strong> 🚨 BLOCKING</div>
+    <div class="fact"><strong>⏰ Timestamp:</strong> 2025-12-02 17:58:54 UTC</div>
+  </div>
+  <a href="https://github.com/eamaral/ai-contract-drift-monitor/actions/runs/19868510933" class="button">🔍 View Execution Details</a>
+</body>
+</html>

@@ -40,7 +40,6 @@
     "private": "boolean",
     "owner": "object",
     "html_url": "string",
-    "description": "string",
     "fork": "boolean",
     "url": "string",
     "forks_url": "string",
@@ -90,7 +89,6 @@
     "size": "number",
     "stargazers_count": "number",
     "watchers_count": "number",
-    "language": "string",
     "has_issues": "boolean",
     "has_projects": "boolean",
     "has_downloads": "boolean",
@@ -116,13 +114,16 @@
     "custom_properties": "object",
     "organization": "object",
     "network_count": "number",
-    "subscribers_count": "number"
+    "subscribers_count": "number",
+    "campo_fake_para_demo": "string",
+    "outro_campo_inexistente": "number"
   },
   "rick_morty_graphql": {
     "Character": [
       "created:String",
       "episode:NON_NULL",
       "gender:String",
+      "new_field_teste:string",
       "id:ID",
       "image:String",
       "location:Location",

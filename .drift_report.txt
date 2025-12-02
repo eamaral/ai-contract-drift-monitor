@@ -3,74 +3,70 @@
 > tsx src/cli/drift.ts
 
 [metrics] Drift monitor metrics registered
-[2025-12-02T17:58:50.256Z] [1b3fb325] [INFO] [drift-check] 🚀 Starting drift check - Run ID: 1b3fb325
-[2025-12-02T17:58:50.256Z] [1b3fb325] [INFO] [drift-check] Checking scheduling window...
-[2025-12-02T17:58:50.256Z] [1b3fb325] [INFO] [schedule] Schedule check passed - monitoring allowed
-[2025-12-02T17:58:50.257Z] [1b3fb325] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
-[2025-12-02T17:58:50.257Z] [1b3fb325] [INFO] [drift-check] Loaded 3 target(s)
-[2025-12-02T17:58:50.257Z] [1b3fb325] [INFO] [drift-check] Previous snapshot: 3 target(s)
-[2025-12-02T17:58:50.257Z] [1b3fb325] [INFO] [drift-check] Fetching fx_usd_eur...
+[2025-12-02T18:40:38.976Z] [c500d754] [INFO] [drift-check] 🚀 Starting drift check - Run ID: c500d754
+[2025-12-02T18:40:38.977Z] [c500d754] [INFO] [drift-check] Checking scheduling window...
+[2025-12-02T18:40:38.977Z] [c500d754] [INFO] [schedule] Schedule check passed - monitoring allowed
+[2025-12-02T18:40:38.977Z] [c500d754] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
+[2025-12-02T18:40:38.977Z] [c500d754] [INFO] [drift-check] Loaded 3 target(s)
+[2025-12-02T18:40:38.977Z] [c500d754] [INFO] [drift-check] Previous snapshot: 3 target(s)
+[2025-12-02T18:40:38.977Z] [c500d754] [INFO] [drift-check] Fetching fx_usd_eur...
 [guardedFetch] GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY (target: fx_usd_eur)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (741ms)
-[2025-12-02T17:58:51.008Z] [1b3fb325] [INFO] [drift-check] ✅ No changes in fx_usd_eur
-[2025-12-02T17:58:51.008Z] [1b3fb325] [INFO] [drift-check] Fetching github_repo_ts...
+[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (694ms)
+[2025-12-02T18:40:39.683Z] [c500d754] [INFO] [drift-check] ✅ No changes in fx_usd_eur
+[2025-12-02T18:40:39.683Z] [c500d754] [INFO] [drift-check] Fetching github_repo_ts...
 [guardedFetch] GET https://api.github.com/repos/microsoft/TypeScript (target: github_repo_ts)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (130ms)
-[2025-12-02T17:58:51.397Z] [1b3fb325] [WARN] [drift-check] Drift detected in github_repo_ts: +2 -2
-[2025-12-02T17:58:51.397Z] [1b3fb325] [INFO] [drift-check] Fetching rick_morty_graphql...
-[2025-12-02T17:58:51.397Z] [1b3fb325] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
+[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (182ms)
+[2025-12-02T18:40:40.162Z] [c500d754] [INFO] [drift-check] ✅ No changes in github_repo_ts
+[2025-12-02T18:40:40.162Z] [c500d754] [INFO] [drift-check] Fetching rick_morty_graphql...
+[2025-12-02T18:40:40.162Z] [c500d754] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
 [guardedFetch] POST https://rickandmortyapi.com/graphql (target: rick_morty_graphql)
 [guardedFetch] Headers: {"Content-Type":"application/json","User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (160ms)
-[2025-12-02T17:58:52.420Z] [1b3fb325] [WARN] [drift-check] Drift detected in rick_morty_graphql: +0 -1
-[2025-12-02T17:58:52.421Z] [1b3fb325] [INFO] [drift-check] Classifying severity...
-[2025-12-02T17:58:52.421Z] [1b3fb325] [WARN] [drift-check] 🚨 MAJOR BREAKING CHANGES
+[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (286ms)
+[2025-12-02T18:40:41.268Z] [c500d754] [WARN] [drift-check] Drift detected in rick_morty_graphql: +0 -1
+[2025-12-02T18:40:41.268Z] [c500d754] [INFO] [drift-check] Classifying severity...
+[2025-12-02T18:40:41.268Z] [c500d754] [WARN] [drift-check] 🚨 MAJOR BREAKING CHANGES
 
-  • [MAJOR] github_repo_ts: Field 'campo_fake_para_demo' removed (breaking change)
-  • [MAJOR] github_repo_ts: Field 'outro_campo_inexistente' removed (breaking change)
-  • [MINOR] github_repo_ts: Field 'description' added (additive change)
-  • [MINOR] github_repo_ts: Field 'language' added (additive change)
   • [MAJOR] rick_morty_graphql: Field 'Character.new_field_teste:string' removed (breaking change)
 
-[2025-12-02T17:58:52.421Z] [1b3fb325] [INFO] [drift-check] Generating AI summary...
-[2025-12-02T17:58:52.421Z] [1b3fb325] [INFO] [ai-summary] AI enabled - generating intelligent summary
-[2025-12-02T17:58:52.421Z] [1b3fb325] [INFO] [ai-summary] Ground truth tokens extracted: 10 unique tokens
-[2025-12-02T17:58:52.422Z] [1b3fb325] [INFO] [ai-summary] Sending request to AI gateway
-[2025-12-02T17:58:54.142Z] [1b3fb325] [INFO] [ai-summary] AI summary generated and validated successfully
-[2025-12-02T17:58:54.142Z] [1b3fb325] [INFO] [drift-check] Updating snapshot (PR-only mode)...
-[2025-12-02T17:58:54.142Z] [1b3fb325] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
-[2025-12-02T17:58:54.143Z] [1b3fb325] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
-[2025-12-02T17:58:54.143Z] [1b3fb325] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
-[2025-12-02T17:58:54.144Z] [1b3fb325] [ERROR] [drift-check] 🚨 BLOCKING: MAJOR changes detected - CI will fail | {}
+[2025-12-02T18:40:41.268Z] [c500d754] [INFO] [drift-check] Generating AI summary...
+[2025-12-02T18:40:41.268Z] [c500d754] [INFO] [ai-summary] AI enabled - generating intelligent summary
+[2025-12-02T18:40:41.269Z] [c500d754] [INFO] [ai-summary] Ground truth tokens extracted: 5 unique tokens
+[2025-12-02T18:40:41.269Z] [c500d754] [INFO] [ai-summary] Sending request to AI gateway
+[2025-12-02T18:40:43.606Z] [c500d754] [INFO] [ai-summary] AI summary generated and validated successfully
+[2025-12-02T18:40:43.606Z] [c500d754] [INFO] [drift-check] Updating snapshot (PR-only mode)...
+[2025-12-02T18:40:43.606Z] [c500d754] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
+[2025-12-02T18:40:43.606Z] [c500d754] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
+[2025-12-02T18:40:43.607Z] [c500d754] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
+[2025-12-02T18:40:43.607Z] [c500d754] [ERROR] [drift-check] 🚨 BLOCKING: MAJOR changes detected - CI will fail | {}
 
 ============================================================
 🚨 API Drift Detected - MAJOR
 
 📝 Summary:
-The API schema has undergone changes, with additions and removals of fields in the github_repo_ts and rick_morty_graphql endpoints, potentially impacting compatibility and data handling for clients. The removal of Character.new_field_teste in rick_morty_graphql is a breaking change, while additions in github_repo_ts may require updates to client handling of description and language fields. These changes have implications for data processing, security, and client compatibility.
+The removal of the 'new_field_teste' field of type 'string' from the 'Character' object in the 'rick_morty_graphql' schema may cause breaking changes for clients that rely on this field, potentially leading to compatibility issues and impacting the overall user experience. This change affects API consumers who have implemented logic based on the presence of 'new_field_teste'. The removal of this field could be due to various reasons such as data redundancy, security concerns, or schema optimization.
 
 💥 Impact:
 
-1. API consumers of github_repo_ts endpoint must update to handle new description and language fields, potentially requiring changes to data parsing and storage logic.
+1. API consumers will encounter errors when attempting to access or manipulate the 'new_field_teste' field, which is no longer available in the 'Character' object.
 
-2. Removal of campo_fake_para_demo and outro_campo_inexistente in github_repo_ts may cause issues for clients relying on these fields, despite them being marked as non-existent or for demo purposes.
+2. Existing queries or mutations that include 'new_field_teste' will fail, requiring updates to remove references to this field to maintain compatibility.
 
-3. The removal of Character.new_field_teste:string in rick_morty_graphql is a breaking change, requiring clients to update their GraphQL queries to avoid errors.
+3. Clients may need to adjust their data processing logic to account for the absence of 'new_field_teste', potentially affecting downstream applications or services that rely on this data.
 
-4. Clients may need to adapt error handling for cases where removed fields are still referenced in queries or payloads, ensuring robustness against potential errors.
+4. The removal of 'new_field_teste' could lead to data loss if clients have been storing or utilizing this field for specific purposes, such as analytics or user profiling.
 
 ⚠️ Risks:
 
-1. Breaking changes in rick_morty_graphql may lead to client errors or failures if not properly updated, potentially impacting user experience and business operations.
+1. Breaking changes: The sudden removal of 'new_field_teste' poses a significant risk of breaking existing client implementations, which could result in service disruptions or errors.
 
-2. Incompatible changes could expose security vulnerabilities if not properly handled, such as incorrect data validation or unauthorized access due to outdated client logic.
+2. Compatibility issues: The change may introduce compatibility problems for clients that have not been updated to reflect the new schema, potentially leading to versioning conflicts or difficulties in maintaining a unified API interface.
 
-3. The introduction of new fields like description and language in github_repo_ts may introduce additional attack surfaces if not properly validated and sanitized, posing security risks.
+3. Data integrity: Depending on how 'new_field_teste' was used, its removal could compromise data integrity, especially if this field was critical for certain business logic or validation processes.
 
-4. Business logic relying on the removed fields may be disrupted, requiring updates to ensure continuity of operations and data integrity.
+4. Security implications: Although the removal of a field itself may not directly introduce a security risk, it could indirectly affect security if 'new_field_teste' was used in authentication, authorization, or input validation processes.
 ============================================================
 
-[2025-12-02T17:58:54.144Z] [1b3fb325] [INFO] [drift-check] Teams webhook not configured, skipping
-[2025-12-02T17:58:54.144Z] [1b3fb325] [INFO] [drift-check] ✅ Drift check completed in 3888ms - Exit code: 1
+[2025-12-02T18:40:43.607Z] [c500d754] [INFO] [drift-check] Teams webhook not configured, skipping
+[2025-12-02T18:40:43.607Z] [c500d754] [INFO] [drift-check] ✅ Drift check completed in 4631ms - Exit code: 1

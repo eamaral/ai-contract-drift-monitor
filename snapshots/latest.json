@@ -123,6 +123,7 @@
       "created:String",
       "episode:NON_NULL",
       "gender:String",
+      "new_field_teste:string",
       "id:ID",
       "image:String",
       "location:Location",

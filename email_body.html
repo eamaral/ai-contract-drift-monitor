@@ -3,49 +3,53 @@
 <head>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-    .header { background: #FF0000; color: white; padding: 20px; border-radius: 5px; }
+    .header { background: #FFA500; color: white; padding: 20px; border-radius: 5px; }
     .content { padding: 20px; background: #f5f5f5; margin: 20px 0; border-radius: 5px; }
-    .details { background: white; padding: 15px; border-left: 4px solid #FF0000; margin: 15px 0; }
+    .details { background: white; padding: 15px; border-left: 4px solid #FFA500; margin: 15px 0; }
     .fact { padding: 5px 0; }
     .fact strong { display: inline-block; width: 200px; }
-    .button { display: inline-block; padding: 10px 20px; background: #FF0000; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+    .button { display: inline-block; padding: 10px 20px; background: #FFA500; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }
     pre { white-space: pre-wrap; word-wrap: break-word; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🚨 API Drift Detected - MAJOR</h1>
+    <h1>⚠️ API Drift Detected - MINOR</h1>
   </div>
   <div class="content">
     <pre>
 📝 Summary:
-The API schema diff indicates the removal of the 'BGN' field from the 'fx_usd_eur' object, which may impact currency conversion functionality and affect clients relying on this field. This change matters because it alters the structure of the API response, potentially breaking client integrations. The removal of 'BGN' may be due to changes in currency support or exchange rate data availability.
+The API schema has added two new fields, 'has_pull_requests' and 'pull_request_creation_policy', to the 'github_repo_ts' object, which may impact API consumers relying on the previous schema and introduce new functionality for pull request management. This change may require updates to client code to handle the additional fields. The addition of these fields could enhance repository management capabilities.
 
 💥 Impact:
 
-1. API consumers will no longer receive 'BGN' (Bulgarian Lev) exchange rates in the 'fx_usd_eur' response, potentially breaking currency conversion logic
+1. API consumers will need to update their code to handle the new 'has_pull_requests' field, which is likely a boolean type indicating the presence of pull requests in a repository.
 
-2. Clients may need to update their parsing logic to handle the modified 'fx_usd_eur' object, ensuring compatibility with the new schema
+2. The introduction of 'pull_request_creation_policy' may affect how clients interact with the API to manage pull requests, potentially requiring changes to endpoint calls, such as those to '/repos/{owner}/{repo}/pulls' or '/repos/{owner}/{repo}/pulls/{pull_number}'.
 
-3. The removal of 'BGN' may affect business workflows that rely on this specific exchange rate, such as financial transactions or accounting processes
+3. Clients may need to adapt to potential changes in error handling or response formats due to the new fields, ensuring compatibility with existing error handling mechanisms.
 
-4. Error handling may need to be updated to account for the absence of 'BGN' in the API response, preventing potential errors or exceptions
+4. The addition of these fields could lead to changes in API response sizes, potentially impacting performance or requiring adjustments to client-side data processing.
+
+5. API documentation and client libraries may need updates to reflect the new fields and their usage.
 
 ⚠️ Risks:
 
-1. Breaking changes: The removal of 'BGN' may cause existing client integrations to fail or produce incorrect results, leading to a negative user experience
+1. Breaking changes: If not properly handled, the addition of new fields could lead to errors or unexpected behavior in client applications that are not updated to accommodate these changes.
 
-2. Data inconsistency: The absence of 'BGN' exchange rates may lead to inconsistencies in financial data or calculations, potentially affecting business decisions
+2. Data inconsistency: If the new fields are not correctly populated or handled, it could lead to inconsistencies in the data used by clients, potentially affecting business logic or user experience.
 
-3. Security implications: If the removal of 'BGN' is not properly handled, it may introduce security vulnerabilities, such as errors or exceptions that can be exploited by attackers</pre>
+3. Security implications: The introduction of 'pull_request_creation_policy' could have security implications if it allows for the creation of pull requests with specific policies that could be exploited, requiring careful consideration of access controls and validation.
+
+4. Compatibility issues: The change may introduce compatibility issues with existing integrations or tools that rely on the previous schema, requiring additional testing and potential updates to ensure seamless integration.</pre>
   </div>
   <div class="details">
-    <div class="fact"><strong>🆔 Run ID:</strong> 20743780883</div>
-    <div class="fact"><strong>📊 Severity:</strong> MAJOR</div>
+    <div class="fact"><strong>🆔 Run ID:</strong> 22093295135</div>
+    <div class="fact"><strong>📊 Severity:</strong> MINOR</div>
     <div class="fact"><strong>⚠️ APIs Affected:</strong> 1</div>
-    <div class="fact"><strong>🚦 Status:</strong> 🚨 BLOCKING</div>
-    <div class="fact"><strong>⏰ Timestamp:</strong> 2026-01-06 09:19:08 UTC</div>
+    <div class="fact"><strong>🚦 Status:</strong> ⚠️ Alert Only</div>
+    <div class="fact"><strong>⏰ Timestamp:</strong> 2026-02-17 09:38:54 UTC</div>
   </div>
-  <a href="https://github.com/eamaral/ai-contract-drift-monitor/actions/runs/20743780883" class="button">🔍 View Execution Details</a>
+  <a href="https://github.com/eamaral/ai-contract-drift-monitor/actions/runs/22093295135" class="button">🔍 View Execution Details</a>
 </body>
 </html>

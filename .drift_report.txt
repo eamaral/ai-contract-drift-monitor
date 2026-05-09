@@ -3,68 +3,71 @@
 > tsx src/cli/drift.ts
 
 [metrics] Drift monitor metrics registered
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] 🚀 Starting drift check - Run ID: c5262d79
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Checking scheduling window...
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [schedule] Schedule check passed - monitoring allowed
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Loaded 3 target(s)
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Previous snapshot: 3 target(s)
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Fetching fx_usd_eur...
+[2026-05-09T10:00:51.221Z] [278b461a] [INFO] [drift-check] 🚀 Starting drift check - Run ID: 278b461a
+[2026-05-09T10:00:51.222Z] [278b461a] [INFO] [drift-check] Checking scheduling window...
+[2026-05-09T10:00:51.222Z] [278b461a] [INFO] [schedule] Schedule check passed - monitoring allowed
+[2026-05-09T10:00:51.222Z] [278b461a] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
+[2026-05-09T10:00:51.222Z] [278b461a] [INFO] [drift-check] Loaded 3 target(s)
+[2026-05-09T10:00:51.222Z] [278b461a] [INFO] [drift-check] Previous snapshot: 3 target(s)
+[2026-05-09T10:00:51.222Z] [278b461a] [INFO] [drift-check] Fetching fx_usd_eur...
 [guardedFetch] GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY (target: fx_usd_eur)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (681ms)
-[2026-01-06T09:19:05.468Z] [c5262d79] [WARN] [drift-check] Drift detected in fx_usd_eur: +0 -1
-[2026-01-06T09:19:05.469Z] [c5262d79] [INFO] [drift-check] Fetching github_repo_ts...
+[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (528ms)
+[2026-05-09T10:00:51.757Z] [278b461a] [INFO] [drift-check] ✅ No changes in fx_usd_eur
+[2026-05-09T10:00:51.757Z] [278b461a] [INFO] [drift-check] Fetching github_repo_ts...
 [guardedFetch] GET https://api.github.com/repos/microsoft/TypeScript (target: github_repo_ts)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (157ms)
-[2026-01-06T09:19:05.937Z] [c5262d79] [INFO] [drift-check] ✅ No changes in github_repo_ts
-[2026-01-06T09:19:05.938Z] [c5262d79] [INFO] [drift-check] Fetching rick_morty_graphql...
-[2026-01-06T09:19:05.938Z] [c5262d79] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
+[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (238ms)
+[2026-05-09T10:00:52.463Z] [278b461a] [WARN] [drift-check] Drift detected in github_repo_ts: +2 -0
+[2026-05-09T10:00:52.463Z] [278b461a] [INFO] [drift-check] Fetching rick_morty_graphql...
+[2026-05-09T10:00:52.463Z] [278b461a] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
 [guardedFetch] POST https://rickandmortyapi.com/graphql (target: rick_morty_graphql)
 [guardedFetch] Headers: {"Content-Type":"application/json","User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (255ms)
-[2026-01-06T09:19:07.036Z] [c5262d79] [INFO] [drift-check] ✅ No changes in rick_morty_graphql
-[2026-01-06T09:19:07.036Z] [c5262d79] [INFO] [drift-check] Classifying severity...
-[2026-01-06T09:19:07.037Z] [c5262d79] [WARN] [drift-check] 🚨 MAJOR BREAKING CHANGES
+[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (398ms)
+[2026-05-09T10:00:53.623Z] [278b461a] [INFO] [drift-check] ✅ No changes in rick_morty_graphql
+[2026-05-09T10:00:53.623Z] [278b461a] [INFO] [drift-check] Classifying severity...
+[2026-05-09T10:00:53.624Z] [278b461a] [WARN] [drift-check] ⚠️ Minor Changes
 
-  • [MAJOR] fx_usd_eur: Field 'BGN' removed (breaking change)
+  • [MINOR] github_repo_ts: Field 'has_pull_requests' added (additive change)
+  • [MINOR] github_repo_ts: Field 'pull_request_creation_policy' added (additive change)
 
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [drift-check] Generating AI summary...
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] AI enabled - generating intelligent summary
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] Ground truth tokens extracted: 2 unique tokens
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] Sending request to AI gateway
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [ai-summary] AI summary generated and validated successfully
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [drift-check] Updating snapshot (PR-only mode)...
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
-[2026-01-06T09:19:08.726Z] [c5262d79] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
-[2026-01-06T09:19:08.726Z] [c5262d79] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
-[2026-01-06T09:19:08.726Z] [c5262d79] [ERROR] [drift-check] 🚨 BLOCKING: MAJOR changes detected - CI will fail | {}
+[2026-05-09T10:00:53.624Z] [278b461a] [INFO] [drift-check] Generating AI summary...
+[2026-05-09T10:00:53.624Z] [278b461a] [INFO] [ai-summary] AI enabled - generating intelligent summary
+[2026-05-09T10:00:53.624Z] [278b461a] [INFO] [ai-summary] Ground truth tokens extracted: 3 unique tokens
+[2026-05-09T10:00:53.624Z] [278b461a] [INFO] [ai-summary] Sending request to AI gateway
+[2026-05-09T10:00:55.681Z] [278b461a] [INFO] [ai-summary] AI summary generated and validated successfully
+[2026-05-09T10:00:55.681Z] [278b461a] [INFO] [drift-check] Updating snapshot (PR-only mode)...
+[2026-05-09T10:00:55.681Z] [278b461a] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
+[2026-05-09T10:00:55.681Z] [278b461a] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
+[2026-05-09T10:00:55.682Z] [278b461a] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
+[2026-05-09T10:00:55.682Z] [278b461a] [INFO] [drift-check] ⚠️ Non-blocking: MINOR changes detected - CI will pass
 
 ============================================================
-🚨 API Drift Detected - MAJOR
+⚠️ API Drift Detected - MINOR
 
 📝 Summary:
-The API schema diff indicates the removal of the 'BGN' field from the 'fx_usd_eur' object, which may impact currency conversion functionality and affect clients relying on this field. This change matters because it alters the structure of the API response, potentially breaking client integrations. The removal of 'BGN' may be due to changes in currency support or exchange rate data availability.
+The API schema has added two new fields, 'has_pull_requests' and 'pull_request_creation_policy', to the 'github_repo_ts' object, which may impact API consumers relying on the previous schema and has significant business implications for repository management.
 
 💥 Impact:
 
-1. API consumers will no longer receive 'BGN' (Bulgarian Lev) exchange rates in the 'fx_usd_eur' response, potentially breaking currency conversion logic
+1. API consumers will need to update their parsing logic to handle the new 'has_pull_requests' boolean field and 'pull_request_creation_policy' string field in the 'github_repo_ts' object
 
-2. Clients may need to update their parsing logic to handle the modified 'fx_usd_eur' object, ensuring compatibility with the new schema
+2. Existing API integrations may break if they do not account for the new fields, potentially causing errors or data inconsistencies
 
-3. The removal of 'BGN' may affect business workflows that rely on this specific exchange rate, such as financial transactions or accounting processes
+3. Clients may need to modify their repository creation or update endpoints to include the new 'pull_request_creation_policy' field, which could be a string enum with values such as 'open', 'restricted', or 'disabled'
 
-4. Error handling may need to be updated to account for the absence of 'BGN' in the API response, preventing potential errors or exceptions
+4. The addition of 'has_pull_requests' may require changes to API consumer's data storage or caching mechanisms to accommodate the new boolean field
 
 ⚠️ Risks:
 
-1. Breaking changes: The removal of 'BGN' may cause existing client integrations to fail or produce incorrect results, leading to a negative user experience
+1. Breaking changes to existing API integrations if not properly updated to handle the new fields, potentially causing downtime or data loss
 
-2. Data inconsistency: The absence of 'BGN' exchange rates may lead to inconsistencies in financial data or calculations, potentially affecting business decisions
+2. Incompatible data types or formats for the new fields may lead to errors or security vulnerabilities if not properly validated or sanitized
 
-3. Security implications: If the removal of 'BGN' is not properly handled, it may introduce security vulnerabilities, such as errors or exceptions that can be exploited by attackers
+3. The introduction of 'pull_request_creation_policy' may expose repositories to unintended pull request creation policies if not properly configured or validated, posing a security risk
+
+4. Insufficient documentation or communication of the schema changes may lead to confusion or delays in adoption among API consumers, impacting business operations and revenue
 ============================================================
 
-[2026-01-06T09:19:08.727Z] [c5262d79] [INFO] [drift-check] Teams webhook not configured, skipping
-[2026-01-06T09:19:08.727Z] [c5262d79] [INFO] [drift-check] ✅ Drift check completed in 3950ms - Exit code: 1
+[2026-05-09T10:00:55.682Z] [278b461a] [INFO] [drift-check] Teams webhook not configured, skipping
+[2026-05-09T10:00:55.682Z] [278b461a] [INFO] [drift-check] ✅ Drift check completed in 4461ms - Exit code: 0

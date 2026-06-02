@@ -3,68 +3,75 @@
 > tsx src/cli/drift.ts
 
 [metrics] Drift monitor metrics registered
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] 🚀 Starting drift check - Run ID: c5262d79
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Checking scheduling window...
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [schedule] Schedule check passed - monitoring allowed
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Loaded 3 target(s)
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Previous snapshot: 3 target(s)
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Fetching fx_usd_eur...
+[2026-06-02T12:34:18.542Z] [37306898] [INFO] [drift-check] 🚀 Starting drift check - Run ID: 37306898
+[2026-06-02T12:34:18.542Z] [37306898] [INFO] [drift-check] Checking scheduling window...
+[2026-06-02T12:34:18.543Z] [37306898] [INFO] [schedule] Schedule check passed - monitoring allowed
+[2026-06-02T12:34:18.543Z] [37306898] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
+[2026-06-02T12:34:18.543Z] [37306898] [INFO] [drift-check] Loaded 3 target(s)
+[2026-06-02T12:34:18.543Z] [37306898] [INFO] [drift-check] Previous snapshot: 3 target(s)
+[2026-06-02T12:34:18.543Z] [37306898] [INFO] [drift-check] Fetching fx_usd_eur...
 [guardedFetch] GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY (target: fx_usd_eur)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (681ms)
-[2026-01-06T09:19:05.468Z] [c5262d79] [WARN] [drift-check] Drift detected in fx_usd_eur: +0 -1
-[2026-01-06T09:19:05.469Z] [c5262d79] [INFO] [drift-check] Fetching github_repo_ts...
+[guardedFetch] ⏱️  Timeout on GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY (attempt 1/3)
+[guardedFetch] 🔄 Retrying in 332ms...
+[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 521 (9902ms)
+[2026-06-02T12:34:28.452Z] [37306898] [ERROR] [drift-check] Failed to fetch fx_usd_eur | {"errorMessage":"Request failed for fx_usd_eur: 521 <none> - <!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n\n<title>frankfurter.dev | 521: Web server is down</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" />\n</head>\n<body>\n<div id=\"cf-wrapper\">\n    <div id=\"cf-error-details\" class=\"p-0\">\n        <header class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-8\">\n            <h1 class=\"inline-block sm:block sm:mb-2 font-light text-60 lg:text-4xl text-black-dark leading-tight mr-2\">\n                <span class=\"inline-block\">Web server is down</span>\n                <span class=\"code-label\">Error code 521</span>\n            </h1>\n            <div>\n                Visit <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_521&utm_campaign=api.frankfurter.dev\" target=\"_blank\" rel=\"noopener noreferrer\">cloudflare.com</a> for more information.\n            </div>\n            <div class=\"mt-3\">2026-06-02 12:34:28 UTC</div>\n        </header>\n        <div class=\"my-8 bg-gradient-gray\">\n            <div class=\"w-240 lg:w-full mx-auto\">\n                <div class=\"clearfix md:px-8\">\n                    <div id=\"cf-browser-status\" class=\" relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center\">\n  <div class=\"relative mb-10 md:m-0\">\n    \n    <span class=\"cf-icon-browser block md:hidden h-20 bg-center bg-no-repeat\"></span>\n    <span class=\"cf-icon-ok w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4\"></span>\n    \n  </div>\n  <span class=\"md:block w-full truncate\">You</span>\n  <h3 class=\"md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3\">\n  \n    Browser\n  \n  </h3>\n  \n  <span class=\"leading-1.3 text-2xl text-green-success\">Working</span>\n  \n</div>\n                    <div id=\"cf-cloudflare-status\" class=\" relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center\">\n  <div class=\"relative mb-10 md:m-0\">\n    <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_521&#38;utm_campaign=api.frankfurter.dev\" target=\"_blank\" rel=\"noopener noreferrer\">\n    <span class=\"cf-icon-cloud block md:hidden h-20 bg-center bg-no-repeat\"></span>\n    <span class=\"cf-icon-ok w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4\"></span>\n    </a>\n  </div>\n  <span class=\"md:block w-full truncate\">San Jose</span>\n  <h3 class=\"md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3\">\n  <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_521&utm_campaign=api.frankfurter.dev\" target=\"_blank\" rel=\"noopener noreferrer\">\n    Cloudflare\n  </a>\n  </h3>\n  \n  <span class=\"leading-1.3 text-2xl text-green-success\">Working</span>\n  \n</div>\n                    <div id=\"cf-host-status\" class=\"cf-error-source relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center\">\n  <div class=\"relative mb-10 md:m-0\">\n    \n    <span class=\"cf-icon-server block md:hidden h-20 bg-center bg-no-repeat\"></span>\n    <span class=\"cf-icon-error w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4\"></span>\n    \n  </div>\n  <span class=\"md:block w-full truncate\">api.frankfurter.dev</span>\n  <h3 class=\"md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3\">\n  \n    Host\n  \n  </h3>\n  \n  <span class=\"leading-1.3 text-2xl text-red-error\">Error</span>\n  \n</div>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n            <div class=\"clearfix\">\n                <div class=\"w-1/2 md:w-full float-left pr-6 md:pb-10 md:pr-0 leading-relaxed\">\n                    <h2 class=\"text-3xl font-normal leading-1.3 mb-4\">What happened?</h2>\n                    <p>The web server is not returning a connection. As a result, the web page is not displaying.</p>\n                </div>\n                <div class=\"w-1/2 md:w-full float-left leading-relaxed\">\n                    <h2 class=\"text-3xl font-normal leading-1.3 mb-4\">What can I do?</h2>\n                    \n                <h3 class=\"text-15 font-semibold mb-2\">If you are a visitor of this website:</h3>\n                <p class=\"mb-6\">Please try again in a few minutes.</p>\n\n                <h3 class=\"text-15 font-semibold mb-2\">If you are the owner of this website:</h3>\n                <p><span>Contact your hosting provider letting them know your web server is not responding.</span> <a rel=\"noopener noreferrer\" href=\"https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-521/\">Additional troubleshooting information</a>.</p>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n    <p class=\"text-13\">\n      <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">a0567e062937eb28</strong></span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n        Your IP:\n        <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n        <span class=\"hidden\" id=\"cf-footer-ip\">52.190.141.40</span>\n        <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n      </span>\n      <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_521&#38;utm_campaign=api.frankfurter.dev\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n      \n    </p>\n    <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n  </div><!-- /.error-footer -->\n\n    </div>\n</div>\n</body>\n</html>","errorStack":"Error: Request failed for fx_usd_eur: 521 <none> - <!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n\n<title>frankfurter.dev | 521: Web server is down</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" />\n</head>\n<body>\n<div id=\"cf-wrapper\">\n    <div id=\"cf-error-details\" class=\"p-0\">\n        <header class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-8\">\n            <h1 class=\"inline-block sm:block sm:mb-2 font-light... [TRUNCATED]"}
+[2026-06-02T12:34:28.452Z] [37306898] [INFO] [drift-check] Fetching github_repo_ts...
 [guardedFetch] GET https://api.github.com/repos/microsoft/TypeScript (target: github_repo_ts)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (157ms)
-[2026-01-06T09:19:05.937Z] [c5262d79] [INFO] [drift-check] ✅ No changes in github_repo_ts
-[2026-01-06T09:19:05.938Z] [c5262d79] [INFO] [drift-check] Fetching rick_morty_graphql...
-[2026-01-06T09:19:05.938Z] [c5262d79] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
+[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (291ms)
+[2026-06-02T12:34:28.746Z] [37306898] [WARN] [drift-check] Drift detected in github_repo_ts: +2 -0
+[2026-06-02T12:34:28.746Z] [37306898] [INFO] [drift-check] Fetching rick_morty_graphql...
+[2026-06-02T12:34:28.746Z] [37306898] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
 [guardedFetch] POST https://rickandmortyapi.com/graphql (target: rick_morty_graphql)
 [guardedFetch] Headers: {"Content-Type":"application/json","User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (255ms)
-[2026-01-06T09:19:07.036Z] [c5262d79] [INFO] [drift-check] ✅ No changes in rick_morty_graphql
-[2026-01-06T09:19:07.036Z] [c5262d79] [INFO] [drift-check] Classifying severity...
-[2026-01-06T09:19:07.037Z] [c5262d79] [WARN] [drift-check] 🚨 MAJOR BREAKING CHANGES
+[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (420ms)
+[2026-06-02T12:34:29.875Z] [37306898] [INFO] [drift-check] ✅ No changes in rick_morty_graphql
+[2026-06-02T12:34:29.875Z] [37306898] [INFO] [drift-check] Classifying severity...
+[2026-06-02T12:34:29.876Z] [37306898] [WARN] [drift-check] ⚠️ Minor Changes
 
-  • [MAJOR] fx_usd_eur: Field 'BGN' removed (breaking change)
+  • [MINOR] github_repo_ts: Field 'has_pull_requests' added (additive change)
+  • [MINOR] github_repo_ts: Field 'pull_request_creation_policy' added (additive change)
 
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [drift-check] Generating AI summary...
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] AI enabled - generating intelligent summary
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] Ground truth tokens extracted: 2 unique tokens
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] Sending request to AI gateway
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [ai-summary] AI summary generated and validated successfully
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [drift-check] Updating snapshot (PR-only mode)...
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
-[2026-01-06T09:19:08.726Z] [c5262d79] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
-[2026-01-06T09:19:08.726Z] [c5262d79] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
-[2026-01-06T09:19:08.726Z] [c5262d79] [ERROR] [drift-check] 🚨 BLOCKING: MAJOR changes detected - CI will fail | {}
+[2026-06-02T12:34:29.876Z] [37306898] [INFO] [drift-check] Generating AI summary...
+[2026-06-02T12:34:29.876Z] [37306898] [INFO] [ai-summary] AI enabled - generating intelligent summary
+[2026-06-02T12:34:29.876Z] [37306898] [INFO] [ai-summary] Ground truth tokens extracted: 3 unique tokens
+[2026-06-02T12:34:29.876Z] [37306898] [INFO] [ai-summary] Sending request to AI gateway
+[2026-06-02T12:34:32.728Z] [37306898] [INFO] [ai-summary] AI summary generated and validated successfully
+[2026-06-02T12:34:32.728Z] [37306898] [INFO] [drift-check] Updating snapshot (PR-only mode)...
+[2026-06-02T12:34:32.728Z] [37306898] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
+[2026-06-02T12:34:32.728Z] [37306898] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
+[2026-06-02T12:34:32.729Z] [37306898] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
+[2026-06-02T12:34:32.729Z] [37306898] [INFO] [drift-check] ⚠️ Non-blocking: MINOR changes detected - CI will pass
 
 ============================================================
-🚨 API Drift Detected - MAJOR
+⚠️ API Drift Detected - MINOR
 
 📝 Summary:
-The API schema diff indicates the removal of the 'BGN' field from the 'fx_usd_eur' object, which may impact currency conversion functionality and affect clients relying on this field. This change matters because it alters the structure of the API response, potentially breaking client integrations. The removal of 'BGN' may be due to changes in currency support or exchange rate data availability.
+The API schema has added two new fields, 'has_pull_requests' and 'pull_request_creation_policy', to the 'github_repo_ts' object, which may impact API consumers relying on the previous schema and have significant business implications for repository management. The addition of these fields may introduce compatibility issues if not properly handled by clients. This change is likely intended to provide more detailed information about GitHub repositories, enhancing the API's functionality.
 
 💥 Impact:
 
-1. API consumers will no longer receive 'BGN' (Bulgarian Lev) exchange rates in the 'fx_usd_eur' response, potentially breaking currency conversion logic
+1. API consumers will need to update their parsing logic to accommodate the new 'has_pull_requests' field, which is likely a boolean type indicating the presence of pull requests in a repository.
 
-2. Clients may need to update their parsing logic to handle the modified 'fx_usd_eur' object, ensuring compatibility with the new schema
+2. The introduction of 'pull_request_creation_policy' may require clients to adapt their repository creation or update workflows, as this field could dictate under what conditions pull requests can be created, potentially affecting the repository's collaboration settings.
 
-3. The removal of 'BGN' may affect business workflows that rely on this specific exchange rate, such as financial transactions or accounting processes
+3. Existing clients may experience compatibility issues if they do not expect these new fields, potentially leading to errors or unexpected behavior when deserializing the API response, especially if they are using strict schema validation.
 
-4. Error handling may need to be updated to account for the absence of 'BGN' in the API response, preventing potential errors or exceptions
+4. The 'has_pull_requests' field could simplify the process of determining if a repository has any pull requests, reducing the need for additional API calls to fetch this information, thus improving efficiency for clients.
+
+5. API documentation and client libraries will need to be updated to reflect these changes, ensuring that developers are aware of and can properly utilize the new fields.
 
 ⚠️ Risks:
 
-1. Breaking changes: The removal of 'BGN' may cause existing client integrations to fail or produce incorrect results, leading to a negative user experience
+1. Breaking changes: The addition of new fields could break existing client implementations that rely on a fixed set of fields in the 'github_repo_ts' object, especially if those clients use schema validation that does not account for additional properties.
 
-2. Data inconsistency: The absence of 'BGN' exchange rates may lead to inconsistencies in financial data or calculations, potentially affecting business decisions
+2. Security implications: The 'pull_request_creation_policy' field, depending on its implementation, could introduce security risks if it allows for overly permissive pull request creation policies, potentially facilitating malicious contributions to repositories.
 
-3. Security implications: If the removal of 'BGN' is not properly handled, it may introduce security vulnerabilities, such as errors or exceptions that can be exploited by attackers
+3. Data inconsistency: If not properly validated, the 'has_pull_requests' field could lead to data inconsistencies if its value does not accurately reflect the repository's state, potentially causing confusion or incorrect decisions based on this information.
+
+4. Deprecation and backwards compatibility: The introduction of new fields without deprecating old ones could lead to a complex schema that supports multiple, potentially conflicting, versions of the API, complicating maintenance and support.
 ============================================================
 
-[2026-01-06T09:19:08.727Z] [c5262d79] [INFO] [drift-check] Teams webhook not configured, skipping
-[2026-01-06T09:19:08.727Z] [c5262d79] [INFO] [drift-check] ✅ Drift check completed in 3950ms - Exit code: 1
+[2026-06-02T12:34:32.729Z] [37306898] [INFO] [drift-check] Teams webhook not configured, skipping
+[2026-06-02T12:34:32.729Z] [37306898] [INFO] [drift-check] ✅ Drift check completed in 14187ms - Exit code: 0

@@ -3,68 +3,71 @@
 > tsx src/cli/drift.ts
 
 [metrics] Drift monitor metrics registered
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] 🚀 Starting drift check - Run ID: c5262d79
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Checking scheduling window...
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [schedule] Schedule check passed - monitoring allowed
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Loaded 3 target(s)
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Previous snapshot: 3 target(s)
-[2026-01-06T09:19:04.778Z] [c5262d79] [INFO] [drift-check] Fetching fx_usd_eur...
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [drift-check] 🚀 Starting drift check - Run ID: 703cfe64
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [drift-check] Checking scheduling window...
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [schedule] Schedule check passed - monitoring allowed
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [drift-check] Loading targets from /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/src/infrastructure/api/config/targets.json
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [drift-check] Loaded 3 target(s)
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [drift-check] Previous snapshot: 3 target(s)
+[2026-07-02T11:26:44.800Z] [703cfe64] [INFO] [drift-check] Fetching fx_usd_eur...
 [guardedFetch] GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY (target: fx_usd_eur)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (681ms)
-[2026-01-06T09:19:05.468Z] [c5262d79] [WARN] [drift-check] Drift detected in fx_usd_eur: +0 -1
-[2026-01-06T09:19:05.469Z] [c5262d79] [INFO] [drift-check] Fetching github_repo_ts...
+[guardedFetch] ✅ GET https://api.frankfurter.app/currencies?from=USD&to=EUR,GBP,JPY - 200 (656ms)
+[2026-07-02T11:26:45.459Z] [703cfe64] [INFO] [drift-check] ✅ No changes in fx_usd_eur
+[2026-07-02T11:26:45.460Z] [703cfe64] [INFO] [drift-check] Fetching github_repo_ts...
 [guardedFetch] GET https://api.github.com/repos/microsoft/TypeScript (target: github_repo_ts)
 [guardedFetch] Headers: {"User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (157ms)
-[2026-01-06T09:19:05.937Z] [c5262d79] [INFO] [drift-check] ✅ No changes in github_repo_ts
-[2026-01-06T09:19:05.938Z] [c5262d79] [INFO] [drift-check] Fetching rick_morty_graphql...
-[2026-01-06T09:19:05.938Z] [c5262d79] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
+[guardedFetch] ✅ GET https://api.github.com/repos/microsoft/TypeScript - 200 (317ms)
+[2026-07-02T11:26:46.120Z] [703cfe64] [WARN] [drift-check] Drift detected in github_repo_ts: +2 -0
+[2026-07-02T11:26:46.120Z] [703cfe64] [INFO] [drift-check] Fetching rick_morty_graphql...
+[2026-07-02T11:26:46.120Z] [703cfe64] [INFO] [drift-check] Using GraphQL introspection for rick_morty_graphql
 [guardedFetch] POST https://rickandmortyapi.com/graphql (target: rick_morty_graphql)
 [guardedFetch] Headers: {"Content-Type":"application/json","User-Agent":"ai-drift-monitor/0.1.0"}
-[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (255ms)
-[2026-01-06T09:19:07.036Z] [c5262d79] [INFO] [drift-check] ✅ No changes in rick_morty_graphql
-[2026-01-06T09:19:07.036Z] [c5262d79] [INFO] [drift-check] Classifying severity...
-[2026-01-06T09:19:07.037Z] [c5262d79] [WARN] [drift-check] 🚨 MAJOR BREAKING CHANGES
+[guardedFetch] ✅ POST https://rickandmortyapi.com/graphql - 200 (401ms)
+[2026-07-02T11:26:47.206Z] [703cfe64] [INFO] [drift-check] ✅ No changes in rick_morty_graphql
+[2026-07-02T11:26:47.206Z] [703cfe64] [INFO] [drift-check] Classifying severity...
+[2026-07-02T11:26:47.206Z] [703cfe64] [WARN] [drift-check] ⚠️ Minor Changes
 
-  • [MAJOR] fx_usd_eur: Field 'BGN' removed (breaking change)
+  • [MINOR] github_repo_ts: Field 'has_pull_requests' added (additive change)
+  • [MINOR] github_repo_ts: Field 'pull_request_creation_policy' added (additive change)
 
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [drift-check] Generating AI summary...
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] AI enabled - generating intelligent summary
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] Ground truth tokens extracted: 2 unique tokens
-[2026-01-06T09:19:07.037Z] [c5262d79] [INFO] [ai-summary] Sending request to AI gateway
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [ai-summary] AI summary generated and validated successfully
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [drift-check] Updating snapshot (PR-only mode)...
-[2026-01-06T09:19:08.725Z] [c5262d79] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
-[2026-01-06T09:19:08.726Z] [c5262d79] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
-[2026-01-06T09:19:08.726Z] [c5262d79] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
-[2026-01-06T09:19:08.726Z] [c5262d79] [ERROR] [drift-check] 🚨 BLOCKING: MAJOR changes detected - CI will fail | {}
+[2026-07-02T11:26:47.206Z] [703cfe64] [INFO] [drift-check] Generating AI summary...
+[2026-07-02T11:26:47.206Z] [703cfe64] [INFO] [ai-summary] AI enabled - generating intelligent summary
+[2026-07-02T11:26:47.206Z] [703cfe64] [INFO] [ai-summary] Ground truth tokens extracted: 3 unique tokens
+[2026-07-02T11:26:47.206Z] [703cfe64] [INFO] [ai-summary] Sending request to AI gateway
+[2026-07-02T11:26:49.570Z] [703cfe64] [INFO] [ai-summary] AI summary generated and validated successfully
+[2026-07-02T11:26:49.570Z] [703cfe64] [INFO] [drift-check] Updating snapshot (PR-only mode)...
+[2026-07-02T11:26:49.570Z] [703cfe64] [INFO] [snapshot-update] Updating snapshot: /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json (mode: PR_ONLY)
+[2026-07-02T11:26:49.570Z] [703cfe64] [INFO] [snapshot-update] ✅ Snapshot written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/snapshots/latest.json
+[2026-07-02T11:26:49.571Z] [703cfe64] [INFO] [snapshot-update] ✅ PR body written to /home/runner/work/ai-contract-drift-monitor/ai-contract-drift-monitor/.pr_body.md
+[2026-07-02T11:26:49.571Z] [703cfe64] [INFO] [drift-check] ⚠️ Non-blocking: MINOR changes detected - CI will pass
 
 ============================================================
-🚨 API Drift Detected - MAJOR
+⚠️ API Drift Detected - MINOR
 
 📝 Summary:
-The API schema diff indicates the removal of the 'BGN' field from the 'fx_usd_eur' object, which may impact currency conversion functionality and affect clients relying on this field. This change matters because it alters the structure of the API response, potentially breaking client integrations. The removal of 'BGN' may be due to changes in currency support or exchange rate data availability.
+The API schema has added two new fields, 'has_pull_requests' and 'pull_request_creation_policy', to the 'github_repo_ts' object, which may impact API consumers relying on the previous schema and could introduce new security considerations. This change matters because it affects the way clients interact with GitHub repository data and may require updates to handle the new fields. The addition of these fields could also introduce new business opportunities or security risks related to pull request management.
 
 💥 Impact:
 
-1. API consumers will no longer receive 'BGN' (Bulgarian Lev) exchange rates in the 'fx_usd_eur' response, potentially breaking currency conversion logic
+1. API consumers will need to update their code to handle the new 'has_pull_requests' field, which is likely a boolean type, indicating whether a repository has pull requests.
 
-2. Clients may need to update their parsing logic to handle the modified 'fx_usd_eur' object, ensuring compatibility with the new schema
+2. The 'pull_request_creation_policy' field, possibly an object or string type, may require clients to adapt their logic for creating or managing pull requests in GitHub repositories.
 
-3. The removal of 'BGN' may affect business workflows that rely on this specific exchange rate, such as financial transactions or accounting processes
+3. Clients may experience breaking changes if they do not properly handle the new fields, potentially leading to errors or data inconsistencies when interacting with the API.
 
-4. Error handling may need to be updated to account for the absence of 'BGN' in the API response, preventing potential errors or exceptions
+4. The addition of these fields could also impact API performance, as clients may need to fetch or process additional data, potentially increasing the load on the API or client applications.
 
 ⚠️ Risks:
 
-1. Breaking changes: The removal of 'BGN' may cause existing client integrations to fail or produce incorrect results, leading to a negative user experience
+1. Security risk: The introduction of 'pull_request_creation_policy' could potentially expose repositories to unauthorized or malicious pull requests if the policy is not properly configured or validated.
 
-2. Data inconsistency: The absence of 'BGN' exchange rates may lead to inconsistencies in financial data or calculations, potentially affecting business decisions
+2. Technical risk: The addition of new fields could lead to compatibility issues with existing client applications or integrations that are not designed to handle the updated schema.
 
-3. Security implications: If the removal of 'BGN' is not properly handled, it may introduce security vulnerabilities, such as errors or exceptions that can be exploited by attackers
+3. Business risk: The new fields may introduce additional complexity or overhead for repository administrators, potentially affecting their ability to manage pull requests efficiently or effectively.
+
+4. Data risk: If not properly handled, the new fields could lead to data inconsistencies or errors, particularly if clients do not correctly interpret or process the 'has_pull_requests' or 'pull_request_creation_policy' data.
 ============================================================
 
-[2026-01-06T09:19:08.727Z] [c5262d79] [INFO] [drift-check] Teams webhook not configured, skipping
-[2026-01-06T09:19:08.727Z] [c5262d79] [INFO] [drift-check] ✅ Drift check completed in 3950ms - Exit code: 1
+[2026-07-02T11:26:49.571Z] [703cfe64] [INFO] [drift-check] Teams webhook not configured, skipping
+[2026-07-02T11:26:49.571Z] [703cfe64] [INFO] [drift-check] ✅ Drift check completed in 4771ms - Exit code: 0

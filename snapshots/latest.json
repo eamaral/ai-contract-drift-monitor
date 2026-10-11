@@ -105,6 +105,8 @@
     "allow_forking": "boolean",
     "is_template": "boolean",
     "web_commit_signoff_required": "boolean",
+    "has_pull_requests": "boolean",
+    "pull_request_creation_policy": "string",
     "topics": "array",
     "visibility": "string",
     "forks": "number",
